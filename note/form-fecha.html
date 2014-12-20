@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" class="app">
+<head>
+	<meta charset="utf-8" />
+	<title>Notebook | Web Application</title>
+	<meta name="description" content="app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<link rel="stylesheet" href="css/app.v2.css" type="text/css" />
+	<link rel="stylesheet" href="css/font.css" type="text/css" cache="false" />
+	<link rel="stylesheet" href="js/datepicker/datepicker.css" type="text/css" cache="false" />
+
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js" cache="false"></script>
+	<script src="js/ie/respond.min.js" cache="false"></script>
+	<script src="js/ie/excanvas.js" cache="false"></script>
+	<![endif]-->
+</head>
+<body>
+	<section class="vbox">
+		<header class="bg-dark dk header navbar navbar-fixed-top-xs">
+			<div class="navbar-header aside-md">
+				<a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen" data-target="#nav"> <i class="fa fa-bars"></i>
+				</a>
+				<a href="#" class="navbar-brand" data-toggle="fullscreen">
+					<img src="images/logo.png" class="m-r-sm">Notebook</a>
+				<a class="btn btn-link visible-xs" data-toggle="dropdown" data-target=".nav-user"> <i class="fa fa-cog"></i>
+				</a>
+			</div>
+			<ul class="nav navbar-nav hidden-xs">
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle dker" data-toggle="dropdown">
+						<i class="fa fa-building-o"></i>
+						<span class="font-bold">Activity</span>
+					</a>
+					<section class="dropdown-menu aside-xl on animated fadeInLeft no-borders lt">
+						<div class="wrapper lter m-t-n-xs">
+							<a href="#" class="thumb pull-left m-r">
+								<img src="images/avatar.jpg" class="img-circle"></a>
+							<div class="clear">
+								<a href="#">
+									<span class="text-white font-bold">@Mike Mcalidek</a>
+								</span>
+								<small class="block">Art Director</small>
+								<a href="#" class="btn btn-xs btn-success m-t-xs">Upgrade</a>
+							</div>
+						</div>
+						<div class="row m-l-none m-r-none m-b-n-xs text-center">
+							<div class="col-xs-4">
+								<div class="padder-v">
+									<span class="m-b-xs h4 block text-white">245</span>
+									<small class="text-muted">Followers</small>
+								</div>
+							</div>
+							<div class="col-xs-4 dk">
+								<div class="padder-v">
+									<span class="m-b-xs h4 block text-white">55</span>
+									<small class="text-muted">Likes</small>
+								</div>
+							</div>
+							<div class="col-xs-4">
+								<div class="padder-v">
+									<span class="m-b-xs h4 block text-white">2,035</span>
+									<small class="text-muted">Photos</small>
+								</div>
+							</div>
+						</div>
+					</section>
+				</li>
+				<li>
+					<div class="m-t m-l">
+						<a href="price.html" class="dropdown-toggle btn btn-xs btn-primary" title="Upgrade">
+							<i class="fa fa-long-arrow-up"></i>
+						</a>
+					</div>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right hidden-xs nav-user">
+				<li class="hidden-xs">
+					<a href="#" class="dropdown-toggle dk" data-toggle="dropdown">
+						<i class="fa fa-bell"></i>
+						<span class="badge badge-sm up bg-danger m-l-n-sm count">2</span>
+					</a>
+					<section class="dropdown-menu aside-xl">
+						<section class="panel bg-white">
+							<header class="panel-heading b-light bg-light"> <strong>You have
+									<span class="count">2</span>
+									notifications</strong> 
+							</header>
+							<div class="list-group list-group-alt animated fadeInRight">
+								<a href="#" class="media list-group-item">
+									<span class="pull-left thumb-sm">
+										<img src="images/avatar.jpg" alt="John said" class="img-circle"></span>
+									<span class="media-body block m-b-none">
+										Use awesome animate.css
+										<br>
+										<small class="text-muted">10 minutes ago</small>
+									</span>
+								</a>
+								<a href="#" class="media list-group-item">
+									<span class="media-body block m-b-none">
+										1.0 initial released
+										<br>
+										<small class="text-muted">1 hour ago</small>
+									</span>
+								</a>
+							</div>
+							<footer class="panel-footer text-sm">
+								<a href="#" class="pull-right">
+									<i class="fa fa-cog"></i>
+								</a>
+								<a href="#notes" data-toggle="class:show animated fadeInRight">See all the notifications</a>
+							</footer>
+						</section>
+					</section>
+				</li>
+				<li class="dropdown hidden-xs">
+					<a href="#" class="dropdown-toggle dker" data-toggle="dropdown">
+						<i class="fa fa-fw fa-search"></i>
+					</a>
+					<section class="dropdown-menu aside-xl animated fadeInUp">
+						<section class="panel bg-white">
+							<form role="search">
+								<div class="form-group wrapper m-b-none">
+									<div class="input-group">
+										<input type="text" class="form-control" placeholder="Search">
+										<span class="input-group-btn">
+											<button type="submit" class="btn btn-info btn-icon">
+												<i class="fa fa-search"></i>
+											</button>
+										</span>
+									</div>
+								</div>
+							</form>
+						</section>
+					</section>
+				</li>
+				
+			</ul>
+		</header>
+		<section>
+			<section class="hbox stretch">
+				<!-- .aside -->
+				<aside class="bg-light lter b-r aside-md hidden-print" id="nav">
+					
+				</aside>
+				<!-- /.aside -->
+				<section id="content">
+					<section class="vbox">
+						<section class="scrollable padder">
+							<ul class="breadcrumb no-border no-radius b-b b-light pull-in">
+								<li>
+									<a href="index.html">
+										<i class="fa fa-home"></i>
+										Home
+									</a>
+								</li>
+								<li>
+									<a href="#">UI kit</a>
+								</li>
+								<li>
+									<a href="#">Form</a>
+								</li>
+								<li class="active">Elements</li>
+							</ul>
+							<div class="m-b-md">
+								<h3 class="m-b-none">Elements</h3>
+							</div>
+							
+								
+							<section class="panel panel-default">
+								<header class="panel-heading font-bold">Form elements</header>
+								<div class="panel-body">
+									<form class="form-horizontal" method="get">
+										
+										<div class="line line-dashed line-lg pull-in"></div>
+										<div class="form-group">
+											<label class="col-sm-2 control-label">Datepicker</label>
+											<div class="col-sm-10">
+												<input class="input-sm input-s datepicker-input form-control" size="16" type="text" value="12-02-2013" data-date-format="dd-mm-yyyy" ></div>
+										</div>
+										
+										
+									</form>
+								</div>
+							</section>
+						</section>
+					</section>
+					
+				</section>
+				<aside class="bg-light lter b-l aside-md hide" id="notes">
+					<div class="wrapper">Notification</div>
+				</aside>
+			</section>
+		</section>
+	</section>
+	<script src="js/app.v2.js"></script>
+	<!-- Bootstrap -->
+	<!-- App -->
+	<div class="modal fade" id="modal-form">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-6 b-r">
+							<h3 class="m-t-none m-b">Sign in</h3>
+							<p>Sign in to meet your friends.</p>
+							<form role="form">
+								<div class="form-group">
+									<label>Email</label>
+									<input type="email" class="form-control" placeholder="Enter email"></div>
+								<div class="form-group">
+									<label>Password</label>
+									<input type="password" class="form-control" placeholder="Password"></div>
+								<div class="checkbox m-t-lg">
+									<button type="submit" class="btn btn-sm btn-success pull-right text-uc m-t-n-xs"> <strong>Log in</strong>
+									</button>
+									<label>
+										<input type="checkbox">Remember me</label>
+								</div>
+							</form>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- datepicker -->
+	<script src="js/datepicker/bootstrap-datepicker.js" cache="false"></script>
+
+</body>
+</html>
