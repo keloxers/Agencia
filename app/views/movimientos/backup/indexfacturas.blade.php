@@ -4,16 +4,15 @@
 
 <nav class="navbar navbar-inverse">
 	<div class="navbar-header">
-		<h1>Juegos</h1>
+		<div class="navbar-brand">{{ $cliente->cliente}} : {{ $fecha }}</div>
 	</div>
 </nav>
 
-<a href="{{ URL::to('/juegos/create') }}" class="btn btn-s-md btn-primary">Nueva entrega de juegos</a>
 
 	<?php
 
 
-		if (count($juegos)>0 )  {
+		if (count($ventasmovimientos)>0 )  {
 
 
 ?>
@@ -24,15 +23,10 @@
 									<table class="table table-striped b-t b-light text-sm">
 										<thead>
 											<tr>
-												<th>Agente</th>
-												<th>Juego</th>
-												<th>Sorteo</th>
-												<th>Valor</th>
-												<th>Entregado</th>
-												<th>Vendido</th>
-												<th>A pagar</th>
-												<th>Pagado</th>
-												<th>Deuda</th>
+												<th>Fecha</th>
+												<th>Cliente</th>
+												<th>Tipo Documento</th>
+												<th>Numero Documento</th>
 												<th>Accion</th>
 											</tr>
 										</thead>
@@ -40,30 +34,21 @@
 
 												<?php
 
-											foreach ($juegos as $juego)
+											foreach ($ventasmovimientos as $ventasmovimiento)
 												{
 
-														$agente = Agente::find($juego->agentes_id);
-														$carton = Carton::find($juego->cartons_id);
+														$cliente = Cliente::find($ventasmovimiento->clientes_id);
+														$tiposdocumento = Tiposdocumento::find($ventasmovimiento->tiposdocumentos_id);
+
 
 														echo "<tr>";
-												        echo "<td>" . $agente->agente . "</td>";
-																echo "<td>" . $carton->carton . "</td>";
-																echo "<td>" . $juego->sorteo . "</td>";
-												        echo "<td>" . $juego->valor_juego . "</td>";
-																echo "<td>" . $juego->entregados . "</td>";
-																echo "<td>" . $juego->vendidos . "</td>";
-																echo "<td>" . $juego->a_pagar . "</td>";
-																echo "<td>" . $juego->pagado . "</td>";
-																echo "<td>" . $juego->deuda . "</td>";
+												        echo "<td>" . $ventasmovimiento->fecha . "</td>";
+												        echo "<td>" . $cliente->cliente . "</td>";
+												        echo "<td>" . $tiposdocumento->tiposdocumento . "</td>";
+												        echo "<td>" . str_pad($ventasmovimiento->numero_comprobante, 12, '0', STR_PAD_LEFT) . "</td>";
 												        echo "<td>" ;
 
-
-														echo "<a href='/juegos/" . $juego->id . "/edit' class='btn btn-xs btn-primary'>Editar</a> ";
-
-														if($juego->deuda < 0) {
-															echo "<a href='/juegos/" . $juego->id . "/saldar' class='btn btn-xs btn-danger'>Saldar</a> ";
-														}
+														echo "<a href='/ventasmovimientos/notacredito/" . $ventasmovimiento->id . "/" . $fecha . "/create' class='btn btn-xs btn-primary'>Crear Nota Credito</a> ";
 
 														print "</td>";
 														print "</tr>";
@@ -93,7 +78,7 @@
 									</div>
 									<div class="col-sm-4 text-right text-center-xs">
 
-									{{ $juegos->links()}}
+									{{ $ventasmovimientos->links()}}
 
 									</div>
 								</div>
@@ -102,7 +87,9 @@
 						</section>
 		<?php
 
-			}
+	} else {
+		echo "Nada que mostrar";
+	}
 
 		?>
 <script src="/js/app.v2.js"></script>

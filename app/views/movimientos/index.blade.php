@@ -4,16 +4,16 @@
 
 <nav class="navbar navbar-inverse">
 	<div class="navbar-header">
-		<h1>Juegos</h1>
+		<h1>movimientos</h1>
 	</div>
 </nav>
 
-<a href="{{ URL::to('/juegos/create') }}" class="btn btn-s-md btn-primary">Nueva entrega de juegos</a>
+<a href="{{ URL::to('/movimientos/create') }}" class="btn btn-s-md btn-primary">Nueva entrega de movimientos</a>
 
 	<?php
 
 
-		if (count($juegos)>0 )  {
+		if (count($movimientos)>0 )  {
 
 
 ?>
@@ -25,7 +25,7 @@
 										<thead>
 											<tr>
 												<th>Agente</th>
-												<th>Juego</th>
+												<th>movimiento</th>
 												<th>Sorteo</th>
 												<th>Valor</th>
 												<th>Entregado</th>
@@ -40,29 +40,29 @@
 
 												<?php
 
-											foreach ($juegos as $juego)
+											foreach ($movimientos as $movimiento)
 												{
 
-														$agente = Agente::find($juego->agentes_id);
-														$carton = Carton::find($juego->cartons_id);
+														$agente = Agente::find($movimiento->agentes_id);
+														$carton = Carton::find($movimiento->cartons_id);
 
 														echo "<tr>";
 												        echo "<td>" . $agente->agente . "</td>";
 																echo "<td>" . $carton->carton . "</td>";
-																echo "<td>" . $juego->sorteo . "</td>";
-												        echo "<td>" . $juego->valor_juego . "</td>";
-																echo "<td>" . $juego->entregados . "</td>";
-																echo "<td>" . $juego->vendidos . "</td>";
-																echo "<td>" . $juego->a_pagar . "</td>";
-																echo "<td>" . $juego->pagado . "</td>";
-																echo "<td>" . $juego->deuda . "</td>";
+																echo "<td>" . $movimiento->sorteo . "</td>";
+												        echo "<td>" . $movimiento->valor_movimiento . "</td>";
+																echo "<td>" . $movimiento->entregados . "</td>";
+																echo "<td>" . $movimiento->vendidos . "</td>";
+																echo "<td>" . $movimiento->a_pagar . "</td>";
+																echo "<td>" . $movimiento->pagado . "</td>";
+																echo "<td>" . $movimiento->deuda . "</td>";
 												        echo "<td>" ;
 
 
-														echo "<a href='/juegos/" . $juego->id . "/edit' class='btn btn-xs btn-primary'>Editar</a> ";
+														echo "<a href='/movimientos/" . $movimiento->id . "/edit' class='btn btn-xs btn-primary'>Editar</a> ";
 
-														if($juego->deuda < 0) {
-															echo "<a href='/juegos/" . $juego->id . "/saldar' class='btn btn-xs btn-danger'>Saldar</a> ";
+														if($movimiento->deuda < 0) {
+															echo "<a href='/movimientos/" . $movimiento->id . "/saldar' class='btn btn-xs btn-danger'>Saldar</a> ";
 														}
 
 														print "</td>";
@@ -93,7 +93,7 @@
 									</div>
 									<div class="col-sm-4 text-right text-center-xs">
 
-									{{ $juegos->links()}}
+									{{ $movimientos->links()}}
 
 									</div>
 								</div>

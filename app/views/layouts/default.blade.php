@@ -128,6 +128,12 @@
                     <span>Juegos</span>
                   </a>
                 </li>
+                <li >
+                  <a href="/movimientos" >
+                    <i class="fa fa-angle-right"></i>
+                    <span>Movimientos</span>
+                  </a>
+                </li>
 
                 <li >
                   <a href="/rendicions" >

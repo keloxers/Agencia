@@ -37,4 +37,8 @@ Route::resource('users', 'UsersController');
 
 Route::resource('rendicions', 'RendicionsController');
 
+Route::get('/juegos/{id}/saldar','JuegosController@saldar');
+
 Route::resource('juegos', 'JuegosController');
+
+Route::resource('movimientos', 'MovimientosController');

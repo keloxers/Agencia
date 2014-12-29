@@ -1,6 +1,6 @@
 <?php
 
-class JuegosController extends BaseController {
+class MovimientosController extends BaseController {
 
 
 	/**
@@ -11,11 +11,11 @@ class JuegosController extends BaseController {
 	public function index()
 	{
 
-        $juegos = DB::table('juegos')
-															->orderby('agentes_id', 'desc')
+        $movimientos = DB::table('movimientos')
+															->orderby('id', 'desc')
 															->paginate(50);
-        $title = "Juegos";
-        return View::make('juegos.index', array('title' => $title, 'juegos' => $juegos));
+        $title = "movimientos";
+        return View::make('movimientos.index', array('title' => $title, 'movimientos' => $movimientos));
 	}
 
 	/**
@@ -25,7 +25,7 @@ class JuegosController extends BaseController {
 	 */
 	public function create()
 	{
-        return View::make('juegos.create');
+        return View::make('movimientos.create');
 	}
 
 	/**
@@ -43,38 +43,38 @@ class JuegosController extends BaseController {
 
 		$rules = [
 			'cartons_id' => 'exists:cartons,id',
-			'valor_juego' => 'numeric|required',
+			'valor_movimiento' => 'numeric|required',
 			'agentes_id' => 'exists:agentes,id',
 			'sorteo' => 'required',
 			'entregados' => 'numeric',
 			'devolucion' => 'numeric'
 		];
 
-		if (! juego::isValid(Input::all(),$rules)) {
+		if (! movimiento::isValid(Input::all(),$rules)) {
 
-			return Redirect::back()->withInput()->withErrors(juego::$errors);
+			return Redirect::back()->withInput()->withErrors(movimiento::$errors);
 
 		}
 
-		$juego = new juego;
+		$movimiento = new movimiento;
 
-		$juego->agentes_id = Input::get('agentes_id');
-		$juego->cartons_id = Input::get('cartons_id');
-		$juego->sorteo = Input::get('sorteo');
-		$juego->valor_juego =  Input::get('valor_juego');
-		$juego->entregados = Input::get('entregados');
-		$juego->devolucion = Input::get('devolucion');
-		$juego->vendidos = $juego->entregados - $juego->devolucion;
-		$juego->neto = $juego->vendidos * $juego->valor_juego;
-		$juego->agencia = $juego->neto * 0.05;
-		$juego->agente = $juego->neto * 0.10;
-		$juego->a_pagar = $juego->neto - $juego->agente;
-		$juego->pagado = 0;
-		$juego->deuda = $juego->pagado - $juego->a_pagar;
+		$movimiento->agentes_id = Input::get('agentes_id');
+		$movimiento->cartons_id = Input::get('cartons_id');
+		$movimiento->sorteo = Input::get('sorteo');
+		$movimiento->valor_movimiento =  Input::get('valor_movimiento');
+		$movimiento->entregados = Input::get('entregados');
+		$movimiento->devolucion = Input::get('devolucion');
+		$movimiento->vendidos = $movimiento->entregados - $movimiento->devolucion;
+		$movimiento->neto = $movimiento->vendidos * $movimiento->valor_movimiento;
+		$movimiento->agencia = $movimiento->neto * 0.05;
+		$movimiento->agente = $movimiento->neto * 0.10;
+		$movimiento->a_pagar = $movimiento->neto - $movimiento->agente;
+		$movimiento->pagado = 0;
+		$movimiento->deuda = $movimiento->pagado - $movimiento->a_pagar;
 
-		$juego->save();
+		$movimiento->save();
 
-		return Redirect::to('/juegos');
+		return Redirect::to('/movimientos');
 
 	}
 
@@ -87,10 +87,10 @@ class JuegosController extends BaseController {
 	 */
 	public function edit($id)
 	{
-		$juego = juego::find($id);
-		$title = "Editar juego";
+		$movimiento = movimiento::find($id);
+		$title = "Editar movimiento";
 
-        return View::make('juegos.edit', array('title' => $title, 'juego' => $juego));
+        return View::make('movimientos.edit', array('title' => $title, 'movimiento' => $movimiento));
 	}
 
 	/**
@@ -110,38 +110,38 @@ class JuegosController extends BaseController {
 
 		$rules = [
 			'cartons_id' => 'exists:cartons,id',
-			'valor_juego' => 'numeric|required',
+			'valor_movimiento' => 'numeric|required',
 			'agentes_id' => 'exists:agentes,id',
 			'sorteo' => 'required',
 			'entregados' => 'numeric',
 			'devolucion' => 'numeric'
 		];
 
-		if (! juego::isValid(Input::all(),$rules)) {
+		if (! movimiento::isValid(Input::all(),$rules)) {
 
-			return Redirect::back()->withInput()->withErrors(juego::$errors);
+			return Redirect::back()->withInput()->withErrors(movimiento::$errors);
 
 		}
 
-		$juego = juego::find($id);
+		$movimiento = movimiento::find($id);
 
-		$juego->agentes_id = Input::get('agentes_id');
-		$juego->cartons_id = Input::get('cartons_id');
-		$juego->sorteo = Input::get('sorteo');
-		$juego->valor_juego =  Input::get('valor_juego');
-		$juego->entregados = Input::get('entregados');
-		$juego->devolucion = Input::get('devolucion');
-		$juego->vendidos = $juego->entregados - $juego->devolucion;
-		$juego->neto = $juego->vendidos * $juego->valor_juego;
-		$juego->agencia = $juego->neto * 0.05;
-		$juego->agente = $juego->neto * 0.10;
-		$juego->a_pagar = $juego->neto - $juego->agente;
-		$juego->pagado = 0;
-		$juego->deuda = $juego->pagado - $juego->a_pagar;
+		$movimiento->agentes_id = Input::get('agentes_id');
+		$movimiento->cartons_id = Input::get('cartons_id');
+		$movimiento->sorteo = Input::get('sorteo');
+		$movimiento->valor_movimiento =  Input::get('valor_movimiento');
+		$movimiento->entregados = Input::get('entregados');
+		$movimiento->devolucion = Input::get('devolucion');
+		$movimiento->vendidos = $movimiento->entregados - $movimiento->devolucion;
+		$movimiento->neto = $movimiento->vendidos * $movimiento->valor_movimiento;
+		$movimiento->agencia = $movimiento->neto * 0.05;
+		$movimiento->agente = $movimiento->neto * 0.10;
+		$movimiento->a_pagar = $movimiento->neto - $movimiento->agente;
+		$movimiento->pagado = 0;
+		$movimiento->deuda = $movimiento->pagado - $movimiento->a_pagar;
 
-		$juego->save();
+		$movimiento->save();
 
-		return Redirect::to('/juegos');
+		return Redirect::to('/movimientos');
 
 
 	}
@@ -150,13 +150,13 @@ class JuegosController extends BaseController {
 
 public function saldar($id)
 {
-	$juego = Juego::find($id);
-	$a_pagar = $juego->a_pagar;
-	$juego->pagado = $a_pagar;
-	$juego->deuda = 0;
-	$juego->save();
+	$movimiento = movimiento::find($id);
+	$a_pagar = $movimiento->a_pagar;
+	$movimiento->pagado = $a_pagar;
+	$movimiento->deuda = 0;
+	$movimiento->save();
 
-	return Redirect::to('/juegos');
+	return Redirect::to('/movimientos');
 }
 
 
