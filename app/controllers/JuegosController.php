@@ -12,6 +12,7 @@ class JuegosController extends BaseController {
 	{
 
         $juegos = DB::table('juegos')
+															->orderby('id', 'desc')
 															->orderby('agentes_id', 'desc')
 															->paginate(50);
         $title = "Juegos";
