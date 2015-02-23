@@ -30,26 +30,18 @@
 
 				<div class="row">
 					<div class="col-xs-3">
+						<label>Agente</label>
+						{{ Form::select( 'agentes_id', Agente::All()->
+						lists('agente', 'id'), Input::get('agente'), array( "placeholder" => "", 'class' => 'form-control input-lg')) }}
+					</div>
+
+					<div class="col-xs-3">
 						<label>Juego</label>
 						{{ Form::select( 'cartons_id', Carton::All()->
 						lists('carton', 'id'), Input::get('carton'), array( "placeholder" => "", 'class' => 'form-control input-lg')) }}
 					</div>
 
-					<div class="col-xs-3">
-						<label>Valor Juego</label>
-						{{ Form::text('valor_juego', Input::get('valor_juego'), array('class' => 'form-control input-lg', 'id' =>'valor_juego', 'name' => 'valor_juego','placeholder' => '')) }}
 
-						@if ($errors->first('valor_juego'))
-							<span class="label label-warning">{{ $errors->first('valor_juego') }}</span>
-						@endif
-
-					</div>
-
-						<div class="col-xs-3">
-							<label>Agente</label>
-							{{ Form::select( 'agentes_id', Agente::All()->
-							lists('agente', 'id'), Input::get('agente'), array( "placeholder" => "", 'class' => 'form-control input-lg')) }}
-						</div>
 
 						<div class="col-xs-3">
 							<label>Sorteo</label>
@@ -62,11 +54,21 @@
 						</div>
 
 
+
 					</div>
 
 					<br>
 					<div class="row">
 
+						<div class="col-xs-3">
+							<label>Valor Juego</label>
+							{{ Form::text('valor_juego', Input::get('valor_juego'), array('class' => 'form-control input-lg', 'id' =>'valor_juego', 'name' => 'valor_juego','placeholder' => '')) }}
+
+							@if ($errors->first('valor_juego'))
+								<span class="label label-warning">{{ $errors->first('valor_juego') }}</span>
+							@endif
+
+						</div>
 
 						<div class="col-xs-3">
 							<label>Entregado</label>
@@ -76,6 +78,7 @@
 							@endif
 
 						</div>
+
 
 						<div class="col-xs-3">
 							<label>Devolucion</label>

@@ -27,7 +27,6 @@
 												<th>Agente</th>
 												<th>Concepto</th>
 												<th>A Pagar</th>
-												<th>Accion</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -58,9 +57,9 @@
 
 																	$carton = Carton::find($juego->cartons_id);
 
-																	echo "<a href='/juegos/" . $juego->id . "/edit' class='btn btn-xs btn-primary'>" . $carton->carton . "</a> ";
-																	echo "$ " . ($juego->deuda * -1) . " ";
-																	echo "<a href='/juegos/" . $juego->id . "/saldar' class='btn btn-xs btn-danger'>Saldar</a><br>";
+																	echo "<a href='/juegos/" . $juego->id . "/edit' class='btn btn-xs btn-primary'>" . $carton->carton . " Sorte: " . $juego->sorteo ."</a> ";
+																	echo "$ " . number_format(($juego->deuda * -1),2) . " ";
+																	echo "<a href='/juegos/" . $juego->id . "/saldar' class='btn btn-xs btn-danger'>Pagó este juego</a><br>";
 
 
 
@@ -76,14 +75,6 @@
 															echo number_format($deuda,2);
 
 															echo "</td>" ;
-
-															echo "<td>" ;
-
-
-															echo "</td>" ;
-
-
-
 
 
 													echo "</td>";
