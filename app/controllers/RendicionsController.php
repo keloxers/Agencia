@@ -61,10 +61,19 @@ class RendicionsController extends BaseController {
 
 		}
 
+
+
 		$rendicion = new Rendicion;
 
 		$rendicion->maquina =  Input::get('maquina');
 		$rendicion->agentes_id = Input::get('agentes_id');
+
+		$agente = Agente::find($rendicion->agentes_id);
+
+		$porcentaje_agente = $agente->porcentaje_agente / 100;
+		$porcentaje_agencia = $agente->porcentaje_agencia / 100;
+
+
 		$rendicion->sorteo = Input::get('sorteo');
 		$rendicion->quiniela = Input::get('quiniela');
 		$rendicion->quiniexpress = Input::get('quiniexpress');
@@ -74,8 +83,8 @@ class RendicionsController extends BaseController {
 
 
 		if ($rendicion->quiniela > 0) {
-			$rendicion->quiniela_agencia = $rendicion->quiniela * 0.05;
-			$rendicion->quiniela_agente = $rendicion->quiniela * 0.15;
+			$rendicion->quiniela_agencia = $rendicion->quiniela * $porcentaje_agencia;
+			$rendicion->quiniela_agente = $rendicion->quiniela * $porcentaje_agente;
 			$rendicion->quiniela_pagar = $rendicion->quiniela - $rendicion->quiniela_agente;
 		}
 
