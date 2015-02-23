@@ -31,16 +31,6 @@
 					</div>
 
 					<div class="col-xs-3">
-						<label>Valor Juego</label>
-						{{ Form::text('valor_juego',  $juego->valor_juego, array('class' => 'form-control input-lg', 'id' =>'valor_juego', 'name' => 'valor_juego','placeholder' => '')) }}
-
-						@if ($errors->first('valor_juego'))
-						<span class="label label-warning">{{ $errors->first('valor_juego') }}</span>
-						@endif
-
-					</div>
-
-					<div class="col-xs-3">
 						<label>Agente</label>
 						{{ Form::select( 'agentes_id', Agente::All()->
 						lists('agente', 'id'), $juego->agentes_id, array( "placeholder" => "", 'class' => 'form-control input-lg')) }}
@@ -62,6 +52,16 @@
 				<br>
 				<div class="row">
 
+
+										<div class="col-xs-3">
+											<label>Valor Juego</label>
+											{{ Form::text('valor_juego',  $juego->valor_juego, array('class' => 'form-control input-lg', 'id' =>'valor_juego', 'name' => 'valor_juego','placeholder' => '')) }}
+
+											@if ($errors->first('valor_juego'))
+											<span class="label label-warning">{{ $errors->first('valor_juego') }}</span>
+											@endif
+
+										</div>
 
 					<div class="col-xs-3">
 						<label>Entregado</label>
