@@ -1,6 +1,6 @@
 <?php
 
-class MovimientosController extends BaseController {
+class DiariosController extends BaseController {
 
 
 	/**
@@ -11,11 +11,14 @@ class MovimientosController extends BaseController {
 	public function index()
 	{
 
-        $movimientos = DB::table('movimientos')
-															->orderby('id', 'desc')
+				// $dt = new Date('Y-m-d');
+
+        $diarios = DB::table('diarios')
+
+															->orderby('created_at', 'asc')
 															->paginate(50);
-        $title = "movimientos";
-        return View::make('movimientos.index', array('title' => $title, 'movimientos' => $movimientos));
+        $title = "diarios";
+        return View::make('diarios.index', array('title' => $title, 'diarios' => $diarios));
 	}
 
 	/**
@@ -25,7 +28,7 @@ class MovimientosController extends BaseController {
 	 */
 	public function create()
 	{
-        return View::make('movimientos.create');
+        return View::make('diarios.create');
 	}
 
 	/**
@@ -42,39 +45,26 @@ class MovimientosController extends BaseController {
 		// die;
 
 		$rules = [
-			'cartons_id' => 'exists:cartons,id',
-			'valor_movimiento' => 'numeric|required',
-			'agentes_id' => 'exists:agentes,id',
-			'sorteo' => 'required',
-			'entregados' => 'numeric',
-			'devolucion' => 'numeric'
+			'importe' => 'numeric|required',
+			'cuentas_id' => 'exists:cuentas,id'
 		];
 
-		if (! movimiento::isValid(Input::all(),$rules)) {
+		if (! Diario::isValid(Input::all(),$rules)) {
 
-			return Redirect::back()->withInput()->withErrors(movimiento::$errors);
+			return Redirect::back()->withInput()->withErrors(Diario::$errors);
 
 		}
 
-		$movimiento = new movimiento;
+		$diario = new Diario;
 
-		$movimiento->agentes_id = Input::get('agentes_id');
-		$movimiento->cartons_id = Input::get('cartons_id');
-		$movimiento->sorteo = Input::get('sorteo');
-		$movimiento->valor_movimiento =  Input::get('valor_movimiento');
-		$movimiento->entregados = Input::get('entregados');
-		$movimiento->devolucion = Input::get('devolucion');
-		$movimiento->vendidos = $movimiento->entregados - $movimiento->devolucion;
-		$movimiento->neto = $movimiento->vendidos * $movimiento->valor_movimiento;
-		$movimiento->agencia = $movimiento->neto * 0.05;
-		$movimiento->agente = $movimiento->neto * 0.10;
-		$movimiento->a_pagar = $movimiento->neto - $movimiento->agente;
-		$movimiento->pagado = 0;
-		$movimiento->deuda = $movimiento->pagado - $movimiento->a_pagar;
+		$diario->cuentas_id = Input::get('cuentas_id');
+		$diario->tipo = Input::get('tipo');
+		$diario->importe = Input::get('importe');
+		$diario->descripcion =  Input::get('descripcion');
 
-		$movimiento->save();
+		$diario->save();
 
-		return Redirect::to('/movimientos');
+		return Redirect::to('/diarios');
 
 	}
 
@@ -87,10 +77,10 @@ class MovimientosController extends BaseController {
 	 */
 	public function edit($id)
 	{
-		$movimiento = movimiento::find($id);
-		$title = "Editar movimiento";
+		$diario = Diario::find($id);
+		$title = "Editar diario";
 
-        return View::make('movimientos.edit', array('title' => $title, 'movimiento' => $movimiento));
+        return View::make('diarios.edit', array('title' => $title, 'diario' => $diario));
 	}
 
 	/**
@@ -103,70 +93,51 @@ class MovimientosController extends BaseController {
 	{
 
 
-		// echo Input::get('vendidos');
-		// $input = Input::all();
-		// var_dump($input);
-		// die;
-
 		$rules = [
-			'cartons_id' => 'exists:cartons,id',
-			'valor_movimiento' => 'numeric|required',
-			'agentes_id' => 'exists:agentes,id',
-			'sorteo' => 'required',
-			'entregados' => 'numeric',
-			'devolucion' => 'numeric'
+			'importe' => 'numeric|required',
+			'cuentas_id' => 'exists:cuentas,id'
 		];
 
-		if (! movimiento::isValid(Input::all(),$rules)) {
+		if (! Diario::isValid(Input::all(),$rules)) {
 
-			return Redirect::back()->withInput()->withErrors(movimiento::$errors);
+			return Redirect::back()->withInput()->withErrors(Diario::$errors);
 
 		}
 
-		$movimiento = movimiento::find($id);
 
-		$movimiento->agentes_id = Input::get('agentes_id');
-		$movimiento->cartons_id = Input::get('cartons_id');
-		$movimiento->sorteo = Input::get('sorteo');
-		$movimiento->valor_movimiento =  Input::get('valor_movimiento');
-		$movimiento->entregados = Input::get('entregados');
-		$movimiento->devolucion = Input::get('devolucion');
-		$movimiento->vendidos = $movimiento->entregados - $movimiento->devolucion;
-		$movimiento->neto = $movimiento->vendidos * $movimiento->valor_movimiento;
-		$movimiento->agencia = $movimiento->neto * 0.05;
-		$movimiento->agente = $movimiento->neto * 0.10;
-		$movimiento->a_pagar = $movimiento->neto - $movimiento->agente;
-		$movimiento->pagado = 0;
-		$movimiento->deuda = $movimiento->pagado - $movimiento->a_pagar;
+		$diario = Diario::find($id);
 
-		$movimiento->save();
+		$diario->cuentas_id = Input::get('cuentas_id');
+		$diario->tipo = Input::get('tipo');
+		$diario->importe = Input::get('importe');
+		$diario->descripcion =  Input::get('descripcion');
 
-		return Redirect::to('/movimientos');
+		$diario->save();
 
-
+		return Redirect::to('/diarios');
 	}
 
 
 
 public function saldar($id)
 {
-	$movimiento = movimiento::find($id);
-	$a_pagar = $movimiento->a_pagar;
-	$movimiento->pagado = $a_pagar;
-	$movimiento->deuda = 0;
-	$movimiento->save();
+	$diario = diario::find($id);
+	$a_pagar = $diario->a_pagar;
+	$diario->pagado = $a_pagar;
+	$diario->deuda = 0;
+	$diario->save();
 
-	return Redirect::to('/movimientos');
+	return Redirect::to('/diarios');
 }
 
 
 	public function cuerpo($id)
 	{
 
-        $ventasmovimiento = Ventasmovimiento::find($id);
+        $ventasdiario = Ventasdiario::find($id);
 
-        $title = "Cuerpo movimientos";
-        return View::make('ventasmovimientos.show', array('title' => $title, 'ventasmovimiento' => $ventasmovimiento));
+        $title = "Cuerpo diarios";
+        return View::make('ventasdiarios.show', array('title' => $title, 'ventasdiario' => $ventasdiario));
 
 
 	}
@@ -175,53 +146,53 @@ public function saldar($id)
 	public function cerrar($id)
 	{
 
-		$ventasmovimiento = Ventasmovimiento::find($id);
+		$ventasdiario = Ventasdiario::find($id);
 
 
-		$total =  DB::table('ventasmovimientoscuerpos')->where('ventasmovimientos_id', $id)->sum('precio_total');
-		$bonificacion =  DB::table('ventasmovimientoscuerpos')->where('ventasmovimientos_id', $id)->sum('bonificacion');
+		$total =  DB::table('ventasdiarioscuerpos')->where('ventasdiarios_id', $id)->sum('precio_total');
+		$bonificacion =  DB::table('ventasdiarioscuerpos')->where('ventasdiarios_id', $id)->sum('bonificacion');
 
-		$importe_gravado = DB::table('ventasmovimientoscuerpos')->where('ventasmovimientos_id', $id)->sum('importe_gravado');
-		$importe_no_gravado = DB::table('ventasmovimientoscuerpos')->where('ventasmovimientos_id', $id)->sum('importe_no_gravado');
-
-
-		$importe_iva = DB::table('ventasmovimientoscuerpos')->where('ventasmovimientos_id', $id)->sum('importe_iva');
-
-		$importe_otros_impuestos = DB::table('ventasmovimientoscuerpos')->where('ventasmovimientos_id', $id)->sum('importes_otros_impuestos');
+		$importe_gravado = DB::table('ventasdiarioscuerpos')->where('ventasdiarios_id', $id)->sum('importe_gravado');
+		$importe_no_gravado = DB::table('ventasdiarioscuerpos')->where('ventasdiarios_id', $id)->sum('importe_no_gravado');
 
 
+		$importe_iva = DB::table('ventasdiarioscuerpos')->where('ventasdiarios_id', $id)->sum('importe_iva');
 
-		if ($ventasmovimiento->condicionesventas_id == 1 ) {
+		$importe_otros_impuestos = DB::table('ventasdiarioscuerpos')->where('ventasdiarios_id', $id)->sum('importes_otros_impuestos');
+
+
+
+		if ($ventasdiario->condicionesventas_id == 1 ) {
 			$contado = true;
-			$ventasmovimiento->estado = 'cerrada';
-			$ventasmovimiento->saldo_movimiento = 0;
+			$ventasdiario->estado = 'cerrada';
+			$ventasdiario->saldo_diario = 0;
 		} else {
 			$contado = false;
-			$ventasmovimiento->estado = 'pendiente';
-			$ventasmovimiento->saldo_movimiento = $total;
+			$ventasdiario->estado = 'pendiente';
+			$ventasdiario->saldo_diario = $total;
 		}
 
 		// es una nota de credito
-		if ($ventasmovimiento->tiposdocumentos_id == 6) {
+		if ($ventasdiario->tiposdocumentos_id == 6) {
 			$contado = false;
-			$ventasmovimiento->estado = 'pendiente';
-			$ventasmovimiento->saldo_movimiento = $total;
+			$ventasdiario->estado = 'pendiente';
+			$ventasdiario->saldo_diario = $total;
 		}
 
 
-		$ventasmovimiento->importe_total = $total;
+		$ventasdiario->importe_total = $total;
 
 
-		$ventasmovimiento->importe_gravado = $importe_gravado;
-		$ventasmovimiento->importe_no_gravado = $importe_no_gravado;
-		$ventasmovimiento->importe_iva = $importe_iva;
-		$ventasmovimiento->importe_otros_impuestos = $importe_otros_impuestos;
-		$ventasmovimiento->porcentaje_bonificacion = 0;
-		$ventasmovimiento->importe_bonificacion = $bonificacion;
+		$ventasdiario->importe_gravado = $importe_gravado;
+		$ventasdiario->importe_no_gravado = $importe_no_gravado;
+		$ventasdiario->importe_iva = $importe_iva;
+		$ventasdiario->importe_otros_impuestos = $importe_otros_impuestos;
+		$ventasdiario->porcentaje_bonificacion = 0;
+		$ventasdiario->importe_bonificacion = $bonificacion;
 
-		$ventasmovimiento->save();
+		$ventasdiario->save();
 
-		return Redirect::to('/ventasmovimientos');
+		return Redirect::to('/ventasdiarios');
 
 	}
 
@@ -230,40 +201,40 @@ public function saldar($id)
 	{
 
         $title = "Recibos";
-        return View::make('ventasmovimientos.recibo');
+        return View::make('ventasdiarios.recibo');
 	}
 
 
 
-	public function movimientossinsaldar()
+	public function diariossinsaldar()
 	{
 
 			$rules = [
 				'clientes_id' => 'exists:clientes,id',
 			];
 
-			if (! Ventasmovimiento::isValid(Input::all(),$rules)) {
-				return Redirect::back()->withInput()->withErrors( Ventasmovimiento::$errors);
+			if (! Ventasdiario::isValid(Input::all(),$rules)) {
+				return Redirect::back()->withInput()->withErrors( Ventasdiario::$errors);
 			}
 
 		$id = Input::get('clientes_id');
 
 
-        $ventasmovimientos =  DB::table('ventasmovimientos')
+        $ventasdiarios =  DB::table('ventasdiarios')
         ->where('clientes_id', $id)
-        ->where('saldo_movimiento', '>', 0)
+        ->where('saldo_diario', '>', 0)
 				->whereIn('tiposdocumentos_id', array(1,2,3,4,6,7,9,10,11))
 				->paginate(20);
 
 
-        $title = "Movimientos sin saldar";
-        return View::make('ventasmovimientos.indexsinsaldar', array('title' => $title, 'ventasmovimientos' => $ventasmovimientos, 'id' => $id));
+        $title = "diarios sin saldar";
+        return View::make('ventasdiarios.indexsinsaldar', array('title' => $title, 'ventasdiarios' => $ventasdiarios, 'id' => $id));
 
 	}
 
 
 
-	public function movimientossinsaldarseleccion()
+	public function diariossinsaldarseleccion()
 	{
 
 
@@ -272,13 +243,13 @@ public function saldar($id)
 				$id = Input::get('clientes_id');
 
 
-        $ventasmovimientos =  DB::table('ventasmovimientos')
+        $ventasdiarios =  DB::table('ventasdiarios')
         ->where('clientes_id', $id)
-        ->where('saldo_movimiento', '>', 0)->paginate(10);
+        ->where('saldo_diario', '>', 0)->paginate(10);
 
 
-        $title = "Movimientos sin saldar";
-        return View::make('ventasmovimientos.indexsinsaldar', array('title' => $title, 'ventasmovimientos' => $ventasmovimientos, 'id' => $id));
+        $title = "diarios sin saldar";
+        return View::make('ventasdiarios.indexsinsaldar', array('title' => $title, 'ventasdiarios' => $ventasdiarios, 'id' => $id));
 
 	}
 
@@ -298,8 +269,8 @@ public function saldar($id)
 		];
 
 
-		if (! Ventasmovimiento::isValid(Input::all(),$rules)) {
-			return Redirect::back()->withInput()->withErrors( Ventasmovimiento::$errors)->with(array('clientes_id' => $id));
+		if (! Ventasdiario::isValid(Input::all(),$rules)) {
+			return Redirect::back()->withInput()->withErrors( Ventasdiario::$errors)->with(array('clientes_id' => $id));
 		}
 
 
@@ -328,14 +299,14 @@ public function saldar($id)
 		// calcula el total de facturas a pagar !
 
 
-		$ventasmovimientos =  DB::table('ventasmovimientos')
+		$ventasdiarios =  DB::table('ventasdiarios')
 		->where('clientes_id', $id)
 		->whereIn('tiposdocumentos_id', array(1,2,3,4,7,10))
-		->where('saldo_movimiento', '>', 0)->get();
+		->where('saldo_diario', '>', 0)->get();
 
-		foreach ($ventasmovimientos as $ventasmovimiento) {
-			if (array_key_exists($ventasmovimiento->id, $ids)) {
-					$total_facturas_a_saldar += $ventasmovimiento->saldo_movimiento;
+		foreach ($ventasdiarios as $ventasdiario) {
+			if (array_key_exists($ventasdiario->id, $ids)) {
+					$total_facturas_a_saldar += $ventasdiario->saldo_diario;
 			}
 		}
 
@@ -352,17 +323,17 @@ public function saldar($id)
 		// suma todos los pagos a cuenta, notas de creditos y las cancela.
 
 
-		$ventasmovimientos =  DB::table('ventasmovimientos')
+		$ventasdiarios =  DB::table('ventasdiarios')
 																		->where('clientes_id', $id)
 																		->whereIn('tiposdocumentos_id', array(6, 9, 11))
-																		->where('saldo_movimiento', '>', 0)->get();
+																		->where('saldo_diario', '>', 0)->get();
 
 
-		foreach ($ventasmovimientos as $ventasmovimiento) {
-			if (array_key_exists($ventasmovimiento->id, $ids)) {
-					$importe_recibo += $ventasmovimiento->saldo_movimiento;
-					$vm = Ventasmovimiento::find($ventasmovimiento->id);
-					$vm->saldo_movimiento = 0;
+		foreach ($ventasdiarios as $ventasdiario) {
+			if (array_key_exists($ventasdiario->id, $ids)) {
+					$importe_recibo += $ventasdiario->saldo_diario;
+					$vm = Ventasdiario::find($ventasdiario->id);
+					$vm->saldo_diario = 0;
 					$vm->estado = 'cerrada';
 					$vm->save();
 			}
@@ -371,61 +342,61 @@ public function saldar($id)
 
 
 
-        $ventasmovimientos =  DB::table('ventasmovimientos')
+        $ventasdiarios =  DB::table('ventasdiarios')
         ->where('clientes_id', $id)
 				->whereIn('tiposdocumentos_id', array(1,2,3,4,7,10))
-        ->where('saldo_movimiento', '>', 0)->get();
+        ->where('saldo_diario', '>', 0)->get();
 
 
-		foreach ($ventasmovimientos as $ventasmovimiento) {
+		foreach ($ventasdiarios as $ventasdiario) {
 
-			if (array_key_exists($ventasmovimiento->id, $ids)) {
-			    // echo "el id " . $ventasmovimiento->id . " existe <br>";
+			if (array_key_exists($ventasdiario->id, $ids)) {
+			    // echo "el id " . $ventasdiario->id . " existe <br>";
 
-			    if ($importe_recibo > 0 and $importe_recibo < $ventasmovimiento->saldo_movimiento) {
+			    if ($importe_recibo > 0 and $importe_recibo < $ventasdiario->saldo_diario) {
 
-						$vm = Ventasmovimiento::find($ventasmovimiento->id);
-						$vm->saldo_movimiento = $vm->saldo_movimiento - $importe_recibo;
+						$vm = Ventasdiario::find($ventasdiario->id);
+						$vm->saldo_diario = $vm->saldo_diario - $importe_recibo;
 						$vm->save();
 
 						$importe_recibo_total += $importe_recibo;
 
-						$tiposdocumento = Tiposdocumento::find($ventasmovimiento->tiposdocumentos_id);
+						$tiposdocumento = Tiposdocumento::find($ventasdiario->tiposdocumentos_id);
 
-						$importe_recibo_total_observaciones .= "Pago parcial " . $tiposdocumento->tiposdocumento . ": " . $ventasmovimiento->numero_comprobante . "<br> ";
+						$importe_recibo_total_observaciones .= "Pago parcial " . $tiposdocumento->tiposdocumento . ": " . $ventasdiario->numero_comprobante . "<br> ";
 
 						$importe_recibo=0;
 
-			    } elseif ($importe_recibo == $ventasmovimiento->saldo_movimiento) {
+			    } elseif ($importe_recibo == $ventasdiario->saldo_diario) {
 
-					$vm = Ventasmovimiento::find($ventasmovimiento->id);
-					$vm->saldo_movimiento = 0;
+					$vm = Ventasdiario::find($ventasdiario->id);
+					$vm->saldo_diario = 0;
 					$vm->estado = 'cerrada';
 					$vm->save();
 
 					$importe_recibo_total += $importe_recibo;
 
-					$tiposdocumento = Tiposdocumento::find($ventasmovimiento->tiposdocumentos_id);
+					$tiposdocumento = Tiposdocumento::find($ventasdiario->tiposdocumentos_id);
 
-					$importe_recibo_total_observaciones .= "Pago saldo total " . $tiposdocumento->tiposdocumento . ": " . $ventasmovimiento->numero_comprobante;
+					$importe_recibo_total_observaciones .= "Pago saldo total " . $tiposdocumento->tiposdocumento . ": " . $ventasdiario->numero_comprobante;
 
 					$importe_recibo=0;
 
-				} elseif ($importe_recibo > $ventasmovimiento->saldo_movimiento) {
+				} elseif ($importe_recibo > $ventasdiario->saldo_diario) {
 
-					$vm = Ventasmovimiento::find($ventasmovimiento->id);
-					$vm->saldo_movimiento = 0;
+					$vm = Ventasdiario::find($ventasdiario->id);
+					$vm->saldo_diario = 0;
 					$vm->estado = 'cerrada';
 					$vm->save();
 
-					$importe_recibo_total += $ventasmovimiento->saldo_movimiento;
+					$importe_recibo_total += $ventasdiario->saldo_diario;
 
-					$tiposdocumento = Tiposdocumento::find($ventasmovimiento->tiposdocumentos_id);
+					$tiposdocumento = Tiposdocumento::find($ventasdiario->tiposdocumentos_id);
 
-					$importe_recibo_total_observaciones .= "Pago saldo total " . $tiposdocumento->tiposdocumento . ": " . $ventasmovimiento->numero_comprobante;
+					$importe_recibo_total_observaciones .= "Pago saldo total " . $tiposdocumento->tiposdocumento . ": " . $ventasdiario->numero_comprobante;
 
 
-			    	$importe_recibo = $importe_recibo - $ventasmovimiento->saldo_movimiento;
+			    	$importe_recibo = $importe_recibo - $ventasdiario->saldo_diario;
 				}
 
 
@@ -450,14 +421,14 @@ public function saldar($id)
 
 		$numero_comprobante = Input::get('numero_comprobante');
 
-		$vm = new Ventasmovimiento();
+		$vm = new Ventasdiario();
 		$vm->fecha = date("Y-m-d", strtotime(Input::get('fecha')));;
 		$vm->fecha_vencimiento = date("Y-m-d", strtotime(Input::get('fecha')));;
 		$vm->tiposdocumentos_id = $responsabilidadesiva->recibo_tiposdocumentos_id;
 		$vm->numero_comprobante = $numero_comprobante;
-		$vm->tipo_movimiento = 'haber';
+		$vm->tipo_diario = 'haber';
 		$vm->importe_total = $importe_recibo_generar;
-		$vm->saldo_movimiento = 0;
+		$vm->saldo_diario = 0;
 		$vm->condicionesventas_id = 1;
 		$vm->importe_gravado = 0;
 		$vm->importe_no_gravado = 0;
@@ -495,14 +466,14 @@ public function saldar($id)
 					$empresasdocumentosnumeros->save();
 
 
-					$vm = new Ventasmovimiento();
+					$vm = new Ventasdiario();
 					$vm->fecha = date("Y-m-d", strtotime(Input::get('fecha')));;
 					$vm->fecha_vencimiento = date("Y-m-d", strtotime(Input::get('fecha')));;
 					$vm->tiposdocumentos_id = 11;
 					$vm->numero_comprobante = $numero_comprobante;
-					$vm->tipo_movimiento = 'haber';
+					$vm->tipo_diario = 'haber';
 					$vm->importe_total = $importe_recibo;
-					$vm->saldo_movimiento = $importe_recibo;
+					$vm->saldo_diario = $importe_recibo;
 					$vm->condicionesventas_id = 1;
 					$vm->importe_gravado = 0;
 					$vm->importe_no_gravado = 0;
@@ -522,7 +493,7 @@ public function saldar($id)
 		}
 
 
-        return View::make('ventasmovimientos.recibo')->with('flash_message', $flash_message);
+        return View::make('ventasdiarios.recibo')->with('flash_message', $flash_message);
 
 
 	}
@@ -531,9 +502,9 @@ public function saldar($id)
 	public function imprimirrecibo($id)
 	{
 
-        $ventasmovimiento = Ventasmovimiento::find($id);
+        $ventasdiario = Ventasdiario::find($id);
 
-        $cliente = Cliente::find($ventasmovimiento->clientes_id);
+        $cliente = Cliente::find($ventasdiario->clientes_id);
 
 		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -588,11 +559,11 @@ public function saldar($id)
 		// writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=0, $reseth=true, $align='', $autopadding=true)
 
 		// create some HTML content
-		$html = '<h1>Recibo Nº: ' . str_pad($ventasmovimiento->numero_comprobante, 12, '0', STR_PAD_LEFT) . '</h1>
+		$html = '<h1>Recibo Nº: ' . str_pad($ventasdiario->numero_comprobante, 12, '0', STR_PAD_LEFT) . '</h1>
 		Cliente: ' . $cliente->cliente . '<br>
-		Fecha: ' . $ventasmovimiento->fecha . '<br>
-		Importe: ' . $ventasmovimiento->importe_total . '<br>
-		Detalle: ' . $ventasmovimiento->observaciones . '<br><br><br><br><br>
+		Fecha: ' . $ventasdiario->fecha . '<br>
+		Importe: ' . $ventasdiario->importe_total . '<br>
+		Detalle: ' . $ventasdiario->observaciones . '<br><br><br><br><br>
 		.................................<br>
 		Recibi Conforme
 		';
@@ -622,7 +593,7 @@ public function saldar($id)
 	{
 
 		$title = "Cuenta Corriente";
-        return View::make('ventasmovimientos.ctacteshow', array('title' => $title));
+        return View::make('ventasdiarios.ctacteshow', array('title' => $title));
 
 	}
 
@@ -641,25 +612,25 @@ public function saldar($id)
 
 		if ($clientes_id > 0 and $cliente<>'') {
 
-		        $ventasmovimientos =  DB::table('ventasmovimientos')
+		        $ventasdiarios =  DB::table('ventasdiarios')
 		        ->where('clientes_id', $clientes_id)
 						->where('empresas_id', $empresas_id)
-		        ->where('saldo_movimiento', '>', 0)
+		        ->where('saldo_diario', '>', 0)
 		        ->orderBy('clientes_id', 'asc')
 		        ->get();
 
 		} else {
-		        $ventasmovimientos =  DB::table('ventasmovimientos')
+		        $ventasdiarios =  DB::table('ventasdiarios')
 		        ->where('estado', 'pendiente')
 						->where('empresas_id', $empresas_id)
-		        ->where('saldo_movimiento', '>', 0)
+		        ->where('saldo_diario', '>', 0)
 		        ->orderBy('clientes_id', 'asc')
 		        ->get();
 		}
 
 
-		if (count($ventasmovimientos) == 0 ) {
-			echo "No encontre movimientos.<br>";
+		if (count($ventasdiarios) == 0 ) {
+			echo "No encontre diarios.<br>";
 			echo "<input type='button' value='Cerrar' onclick='self.close()'>";
 			die;
 		}
@@ -722,10 +693,10 @@ public function saldar($id)
 
 		$primera_vez = true;
 
-		foreach ($ventasmovimientos as $ventasmovimiento)
+		foreach ($ventasdiarios as $ventasdiario)
 			{
-					if ($cliente_actual<>$ventasmovimiento->clientes_id) {
-						$cliente_actual = $ventasmovimiento->clientes_id;
+					if ($cliente_actual<>$ventasdiario->clientes_id) {
+						$cliente_actual = $ventasdiario->clientes_id;
 
 
 						if ($primera_vez) {
@@ -753,45 +724,45 @@ public function saldar($id)
 					        $html .= "<td>Fecha</td>";
 					        $html .= "<td>Documento</td>";
 					        $html .= "<td>Numero</td>";
-					        $html .= "<td align=\"right\">Saldo Movimiento</td>";
+					        $html .= "<td align=\"right\">Saldo diario</td>";
 							$html .= "</tr>";
 
 					}
 
-					$tiposdocumento = Tiposdocumento::find($ventasmovimiento->tiposdocumentos_id);
+					$tiposdocumento = Tiposdocumento::find($ventasdiario->tiposdocumentos_id);
 
 
 					$relleno_inicio = "";
 					$relleno_fin = "";
 
-					if ( $ventasmovimiento->tiposdocumentos_id == 1
-								or $ventasmovimiento->tiposdocumentos_id == 2
-								or $ventasmovimiento->tiposdocumentos_id == 3
-								or $ventasmovimiento->tiposdocumentos_id == 4
-								or $ventasmovimiento->tiposdocumentos_id == 7
-								or $ventasmovimiento->tiposdocumentos_id == 8
+					if ( $ventasdiario->tiposdocumentos_id == 1
+								or $ventasdiario->tiposdocumentos_id == 2
+								or $ventasdiario->tiposdocumentos_id == 3
+								or $ventasdiario->tiposdocumentos_id == 4
+								or $ventasdiario->tiposdocumentos_id == 7
+								or $ventasdiario->tiposdocumentos_id == 8
 
 					) {
-							$total_cliente += $ventasmovimiento->saldo_movimiento;
-							$total_general += $ventasmovimiento->saldo_movimiento;
+							$total_cliente += $ventasdiario->saldo_diario;
+							$total_general += $ventasdiario->saldo_diario;
 
 					} elseif (
-								   $ventasmovimiento->tiposdocumentos_id == 6
-								or $ventasmovimiento->tiposdocumentos_id == 9
-								or $ventasmovimiento->tiposdocumentos_id == 11
+								   $ventasdiario->tiposdocumentos_id == 6
+								or $ventasdiario->tiposdocumentos_id == 9
+								or $ventasdiario->tiposdocumentos_id == 11
 					) {
-							$total_cliente -= $ventasmovimiento->saldo_movimiento;
-							$total_general -= $ventasmovimiento->saldo_movimiento;
+							$total_cliente -= $ventasdiario->saldo_diario;
+							$total_general -= $ventasdiario->saldo_diario;
 							$relleno_inicio = "(";
 							$relleno_fin = ")";
 					}
 
 					$html .= "<tr>";
 
-							$html .= "<td>" . $ventasmovimiento->fecha . "</td>";
+							$html .= "<td>" . $ventasdiario->fecha . "</td>";
 							$html .= "<td>" . $tiposdocumento->tiposdocumento . "</td>";
-							$html .= "<td>" . str_pad($ventasmovimiento->numero_comprobante, 12, '0', STR_PAD_LEFT) . "</td>";
-							$html .= "<td align=\"right\">" . $relleno_inicio . $ventasmovimiento->saldo_movimiento . $relleno_fin . "</td>";
+							$html .= "<td>" . str_pad($ventasdiario->numero_comprobante, 12, '0', STR_PAD_LEFT) . "</td>";
+							$html .= "<td align=\"right\">" . $relleno_inicio . $ventasdiario->saldo_diario . $relleno_fin . "</td>";
 
 					$html .= "</tr>";
 
@@ -848,7 +819,7 @@ public function saldar($id)
 	{
 
 		$title = "Informe Ventas";
-        return View::make('ventasmovimientos.ventashow', array('title' => $title));
+        return View::make('ventasdiarios.ventashow', array('title' => $title));
 
 	}
 
@@ -869,9 +840,9 @@ public function saldar($id)
 
 
 
-		if (! Ventasmovimiento::isValid(Input::all(),$rules)) {
+		if (! Ventasdiario::isValid(Input::all(),$rules)) {
 
-			return Redirect::back()->withInput()->withErrors(Ventasmovimiento::$errors);
+			return Redirect::back()->withInput()->withErrors(Ventasdiario::$errors);
 
 		}
 
@@ -882,7 +853,7 @@ public function saldar($id)
 
 		$empresa = Empresa::find($empresas_id);
 
-        $ventasmovimientos =  DB::table('ventasmovimientos')
+        $ventasdiarios =  DB::table('ventasdiarios')
         ->where('fecha', '>=', $fecha_desde)
         ->where('fecha', '<=', $fecha_hasta)
 				->where('empresas_id', '=', $empresas_id)
@@ -964,25 +935,25 @@ public function saldar($id)
 
 
 
-		foreach ($ventasmovimientos as $ventasmovimiento)
+		foreach ($ventasdiarios as $ventasdiario)
 			{
 
-					$cliente = Cliente::find($ventasmovimiento->clientes_id);
-					$tiposdocumento = Tiposdocumento::find($ventasmovimiento->tiposdocumentos_id);
+					$cliente = Cliente::find($ventasdiario->clientes_id);
+					$tiposdocumento = Tiposdocumento::find($ventasdiario->tiposdocumentos_id);
 
 					$html .= "<tr>";
 
-			        $html .= "<td>" . $ventasmovimiento->fecha . "</td>";
+			        $html .= "<td>" . $ventasdiario->fecha . "</td>";
 			        $html .= "<td>" . $cliente->cliente . "</td>";
 			        $html .= "<td>" . $tiposdocumento->tiposdocumento . "</td>";
-			        $html .= "<td>" . str_pad($ventasmovimiento->numero_comprobante, 12, '0', STR_PAD_LEFT) . "</td>";
-			        $html .= "<td align=\"right\">" . $ventasmovimiento->importe_iva . "</td>";
-			        $html .= "<td align=\"right\">" . $ventasmovimiento->importe_total . "</td>";
+			        $html .= "<td>" . str_pad($ventasdiario->numero_comprobante, 12, '0', STR_PAD_LEFT) . "</td>";
+			        $html .= "<td align=\"right\">" . $ventasdiario->importe_iva . "</td>";
+			        $html .= "<td align=\"right\">" . $ventasdiario->importe_total . "</td>";
 
 					$html .= "</tr>";
 
-					$total_iva += $ventasmovimiento->importe_iva;
-			    	$total_general += $ventasmovimiento->importe_total;
+					$total_iva += $ventasdiario->importe_iva;
+			    	$total_general += $ventasdiario->importe_total;
 			}
 
 			$html .= "<tr>";
@@ -1037,7 +1008,7 @@ public function saldar($id)
 	{
 
 		$title = "Informe Recibos";
-        return View::make('ventasmovimientos.reciboshow', array('title' => $title));
+        return View::make('ventasdiarios.reciboshow', array('title' => $title));
 
 	}
 
@@ -1053,9 +1024,9 @@ public function saldar($id)
 			'empresas_id' => 'exists:empresas,id',
 		];
 
-		if (! Ventasmovimiento::isValid(Input::all(),$rules)) {
+		if (! Ventasdiario::isValid(Input::all(),$rules)) {
 
-			return Redirect::back()->withInput()->withErrors(Ventasmovimiento::$errors);
+			return Redirect::back()->withInput()->withErrors(Ventasdiario::$errors);
 
 		}
 
@@ -1066,7 +1037,7 @@ public function saldar($id)
 
 		$empresa = Empresa::find($empresas_id);
 
-        $ventasmovimientos =  DB::table('ventasmovimientos')
+        $ventasdiarios =  DB::table('ventasdiarios')
         ->where('fecha', '>=', $fecha_desde)
         ->where('fecha', '<=', $fecha_hasta)
 				->where('empresas_id', '=', $empresas_id)
@@ -1147,24 +1118,24 @@ public function saldar($id)
 
 
 
-		foreach ($ventasmovimientos as $ventasmovimiento)
+		foreach ($ventasdiarios as $ventasdiario)
 			{
 
-					$cliente = Cliente::find($ventasmovimiento->clientes_id);
-					$tiposdocumento = Tiposdocumento::find($ventasmovimiento->tiposdocumentos_id);
+					$cliente = Cliente::find($ventasdiario->clientes_id);
+					$tiposdocumento = Tiposdocumento::find($ventasdiario->tiposdocumentos_id);
 
 					$html .= "<tr>";
 
-			        $html .= "<td>" . $ventasmovimiento->fecha . "</td>";
+			        $html .= "<td>" . $ventasdiario->fecha . "</td>";
 			        $html .= "<td>" . $cliente->cliente . "</td>";
 			        $html .= "<td>" . $tiposdocumento->tiposdocumento . "</td>";
-			        $html .= "<td>" . str_pad($ventasmovimiento->numero_comprobante, 12, '0', STR_PAD_LEFT) . "</td>";
-			        $html .= "<td align=\"right\">" . $ventasmovimiento->importe_total . "</td>";
+			        $html .= "<td>" . str_pad($ventasdiario->numero_comprobante, 12, '0', STR_PAD_LEFT) . "</td>";
+			        $html .= "<td align=\"right\">" . $ventasdiario->importe_total . "</td>";
 
 					$html .= "</tr>";
 
 
-			    	$total_general += $ventasmovimiento->importe_total;
+			    	$total_general += $ventasdiario->importe_total;
 			}
 
 			$html .= "<tr>";
@@ -1217,7 +1188,7 @@ public function saldar($id)
 	{
 
 		$title = "Informe Mayor";
-        return View::make('ventasmovimientos.mayorshow', array('title' => $title));
+        return View::make('ventasdiarios.mayorshow', array('title' => $title));
 
 	}
 
@@ -1234,9 +1205,9 @@ public function saldar($id)
 			'empresas_id' => 'exists:empresas,id',
 		];
 
-		if (! Ventasmovimiento::isValid(Input::all(),$rules)) {
+		if (! Ventasdiario::isValid(Input::all(),$rules)) {
 
-			return Redirect::back()->withInput()->withErrors(Ventasmovimiento::$errors);
+			return Redirect::back()->withInput()->withErrors(Ventasdiario::$errors);
 
 		}
 
@@ -1251,7 +1222,7 @@ public function saldar($id)
 		$fecha_desde = date("Y-m-d", strtotime(Input::get('fecha_desde')));
 		$fecha_hasta = date("Y-m-d", strtotime(Input::get('fecha_hasta')));
 
-		$debe = DB::table('ventasmovimientos')
+		$debe = DB::table('ventasdiarios')
 		->whereIn('tiposdocumentos_id', array(1,2,3,4,7,10))
 		->where('clientes_id', '=', $clientes_id)
 		->where('empresas_id', '=', $empresas_id)
@@ -1261,7 +1232,7 @@ public function saldar($id)
 
 
 
-		$haber = DB::table('ventasmovimientos')
+		$haber = DB::table('ventasdiarios')
 		->whereIn('tiposdocumentos_id', array(5,6,9))
 		->where('clientes_id', '=', $clientes_id)
 		->where('empresas_id', '=', $empresas_id)
@@ -1272,7 +1243,7 @@ public function saldar($id)
 
 
 
-        $ventasmovimientos =  DB::table('ventasmovimientos')
+        $ventasdiarios =  DB::table('ventasdiarios')
         ->whereIn('tiposdocumentos_id', array(1,2,3,4,5,6,7,9,10))
 				->where('clientes_id', '=', $clientes_id)
 				->where('empresas_id', '=', $empresas_id)
@@ -1365,37 +1336,37 @@ public function saldar($id)
 
 
 
-		foreach ($ventasmovimientos as $ventasmovimiento)
+		foreach ($ventasdiarios as $ventasdiario)
 			{
 
 
-					if ($ventasmovimiento->fecha >= $fecha_desde and $ventasmovimiento->fecha <= $fecha_hasta) {
-						$cliente = Cliente::find($ventasmovimiento->clientes_id);
-						$tiposdocumento = Tiposdocumento::find($ventasmovimiento->tiposdocumentos_id);
+					if ($ventasdiario->fecha >= $fecha_desde and $ventasdiario->fecha <= $fecha_hasta) {
+						$cliente = Cliente::find($ventasdiario->clientes_id);
+						$tiposdocumento = Tiposdocumento::find($ventasdiario->tiposdocumentos_id);
 
 						$html .= "<tr>";
 
-				        $html .= "<td>" . $ventasmovimiento->fecha . "</td>";
+				        $html .= "<td>" . $ventasdiario->fecha . "</td>";
 				        $html .= "<td>" . $tiposdocumento->tiposdocumento . "</td>";
-				        $html .= "<td>" . str_pad($ventasmovimiento->numero_comprobante, 12, '0', STR_PAD_LEFT) . "</td>";
-				        	if ($ventasmovimiento->tipo_movimiento == "debe") {
-				        		$html .= "<td align=\"right\">" . $ventasmovimiento->importe_total . "</td>";
+				        $html .= "<td>" . str_pad($ventasdiario->numero_comprobante, 12, '0', STR_PAD_LEFT) . "</td>";
+				        	if ($ventasdiario->tipo_diario == "debe") {
+				        		$html .= "<td align=\"right\">" . $ventasdiario->importe_total . "</td>";
 
-				        		if ($ventasmovimiento->condicionesventas_id == 1) {
-				        			$html .= "<td align=\"right\">" . $ventasmovimiento->importe_total . "</td>";
-				        			$saldo -= $ventasmovimiento->importe_total;
+				        		if ($ventasdiario->condicionesventas_id == 1) {
+				        			$html .= "<td align=\"right\">" . $ventasdiario->importe_total . "</td>";
+				        			$saldo -= $ventasdiario->importe_total;
 				        		} else {
 				        			$html .= "<td align=\"right\"></td>";
 				        		}
 
-								$saldo += $ventasmovimiento->importe_total;
+								$saldo += $ventasdiario->importe_total;
 
 
 
 				        	} else {
 				        		$html .= "<td align=\"right\"></td>";
-				        		$html .= "<td align=\"right\">" . $ventasmovimiento->importe_total . "</td>";
-				        		$saldo -= $ventasmovimiento->importe_total;
+				        		$html .= "<td align=\"right\">" . $ventasdiario->importe_total . "</td>";
+				        		$saldo -= $ventasdiario->importe_total;
 
 				        	}
 				        $html .= "<td align=\"right\">" . number_format($saldo,2) . "</td>";
@@ -1464,7 +1435,7 @@ public function notacredito()
 
 
 
-			$ventasmovimientos = DB::table('ventasmovimientos')
+			$ventasdiarios = DB::table('ventasdiarios')
 														->where('estado', 'abierto')
 														->whereIn('tiposdocumentos_id', array(6, 9))
 														->paginate(15);
@@ -1472,7 +1443,7 @@ public function notacredito()
 			$title = "Notas de Creditos";
 
 
-			return View::make('ventasmovimientos.indexnc', array('title' => $title, 'ventasmovimientos' => $ventasmovimientos));
+			return View::make('ventasdiarios.indexnc', array('title' => $title, 'ventasdiarios' => $ventasdiarios));
 
 
 }
@@ -1492,10 +1463,10 @@ public function notacreditoedit($id)
 
 
 
-				$ventasmovimiento = Ventasmovimiento::find($id);
+				$ventasdiario = Ventasdiario::find($id);
 
-				$title = "Cuerpo movimientos";
-				return View::make('ventasmovimientos.show', array('title' => $title, 'ventasmovimiento' => $ventasmovimiento));
+				$title = "Cuerpo diarios";
+				return View::make('ventasdiarios.show', array('title' => $title, 'ventasdiario' => $ventasdiario));
 
 
 
@@ -1514,7 +1485,7 @@ public function notacreditocreate()
 
 	$title = "Nota de Credito";
 
-			return View::make('ventasmovimientos.notacreditocreate', array('title' => $title));
+			return View::make('ventasdiarios.notacreditocreate', array('title' => $title));
 
 }
 
@@ -1535,8 +1506,8 @@ public function verfacturasparanc()
 		];
 
 
-		if (! Ventasmovimiento::isValid(Input::all(),$rules)) {
-					return Redirect::back()->withInput()->withErrors(Ventasmovimiento::$errors);
+		if (! Ventasdiario::isValid(Input::all(),$rules)) {
+					return Redirect::back()->withInput()->withErrors(Ventasdiario::$errors);
 		}
 
 		$clientes_id = Input::get('clientes_id');
@@ -1546,7 +1517,7 @@ public function verfacturasparanc()
 		$cliente = Cliente::find($clientes_id);
 
 
-		$ventasmovimientos = DB::table('ventasmovimientos')
+		$ventasdiarios = DB::table('ventasdiarios')
 																	->where('clientes_id', $clientes_id)
 																	->where('empresas_id', $empresas_id)
 																	->whereIn('estado', array('cerrada', 'pendiente'))
@@ -1554,10 +1525,10 @@ public function verfacturasparanc()
 																	->paginate(10);
 
 		$title = "Facturas";
-		return View::make('ventasmovimientos.indexfacturasparanc',
+		return View::make('ventasdiarios.indexfacturasparanc',
 												array(
 													'title' => $title,
-													'ventasmovimientos' => $ventasmovimientos,
+													'ventasdiarios' => $ventasdiarios,
 													'cliente' => $cliente,
 													'empresas_id' => $empresas_id,
 													'fecha' => $fecha,
@@ -1595,23 +1566,23 @@ public function nccreate()
 		$empresas_id = Input::get('empresas_id');
 
 		$sinseleccion = Input::get('sinseleccion');
-		$ventasmovimientos_id = Input::get('ventasmovimientos_id');
+		$ventasdiarios_id = Input::get('ventasdiarios_id');
 
 
 		$cliente = Cliente::find($clientes_id);
 
-		$ventasmovimientoNC = new Ventasmovimiento;
+		$ventasdiarioNC = new Ventasdiario;
 
-		$ventasmovimientoNC->fecha = $fecha;
-		$ventasmovimientoNC->fecha_vencimiento = $fecha;
+		$ventasdiarioNC->fecha = $fecha;
+		$ventasdiarioNC->fecha_vencimiento = $fecha;
 
 		if ($cliente->responsabilidadesivas_id == 7) {
-				$ventasmovimientoNC->tiposdocumentos_id = 6;
+				$ventasdiarioNC->tiposdocumentos_id = 6;
 		} else {
-				$ventasmovimientoNC->tiposdocumentos_id = 9;
+				$ventasdiarioNC->tiposdocumentos_id = 9;
 		}
 
-		$ventasmovimientoNC->empresas_id = $empresas_id;
+		$ventasdiarioNC->empresas_id = $empresas_id;
 
 		$responsabilidadesiva = Responsabilidadesiva::find($cliente->responsabilidadesivas_id);
 
@@ -1629,35 +1600,35 @@ public function nccreate()
 		$empresasdocumentosnumeros->numero = $empresasdocumentosnumeros->numero + 1;
 		$empresasdocumentosnumeros->save();
 
-		$ventasmovimientoNC->numero_comprobante = $numero_comprobante;
+		$ventasdiarioNC->numero_comprobante = $numero_comprobante;
 
-		$ventasmovimientoNC->tipo_movimiento = "haber";
-		$ventasmovimientoNC->importe_total = 0;
-		$ventasmovimientoNC->saldo_movimiento = 0;
-		$ventasmovimientoNC->condicionesventas_id = 1;
-		$ventasmovimientoNC->importe_gravado = 0;
-		$ventasmovimientoNC->importe_no_gravado = 0;
-		$ventasmovimientoNC->importe_iva = 0;
-		$ventasmovimientoNC->importe_otros_impuestos = 0;
-		$ventasmovimientoNC->porcentaje_bonificacion = 0;
-		$ventasmovimientoNC->importe_bonificacion = 0;
-		$ventasmovimientoNC->estado = "abierto";
-		$ventasmovimientoNC->observaciones="";
-		$ventasmovimientoNC->users_id = 3;
-		$ventasmovimientoNC->clientes_id = $clientes_id;
+		$ventasdiarioNC->tipo_diario = "haber";
+		$ventasdiarioNC->importe_total = 0;
+		$ventasdiarioNC->saldo_diario = 0;
+		$ventasdiarioNC->condicionesventas_id = 1;
+		$ventasdiarioNC->importe_gravado = 0;
+		$ventasdiarioNC->importe_no_gravado = 0;
+		$ventasdiarioNC->importe_iva = 0;
+		$ventasdiarioNC->importe_otros_impuestos = 0;
+		$ventasdiarioNC->porcentaje_bonificacion = 0;
+		$ventasdiarioNC->importe_bonificacion = 0;
+		$ventasdiarioNC->estado = "abierto";
+		$ventasdiarioNC->observaciones="";
+		$ventasdiarioNC->users_id = 3;
+		$ventasdiarioNC->clientes_id = $clientes_id;
 
-		$ventasmovimientoNC->save();
+		$ventasdiarioNC->save();
 
-		$id_nuevo = $ventasmovimientoNC->id;
+		$id_nuevo = $ventasdiarioNC->id;
 
 
 
-		$ventasmovimientoscuerpos = DB::table('ventasmovimientoscuerpos')
-																	->where('ventasmovimientos_id', $ventasmovimientos_id)
+		$ventasdiarioscuerpos = DB::table('ventasdiarioscuerpos')
+																	->where('ventasdiarios_id', $ventasdiarios_id)
 																	->get();
 
 
-		// echo count($ventasmovimientoscuerpos);
+		// echo count($ventasdiarioscuerpos);
 		// die;
 		//
 		//
@@ -1665,32 +1636,32 @@ public function nccreate()
 
 
 
-		if (count($ventasmovimientoscuerpos)) {
+		if (count($ventasdiarioscuerpos)) {
 
 
 
 
 
-		foreach ($ventasmovimientoscuerpos as $ventasmovimientoscuerpo)
+		foreach ($ventasdiarioscuerpos as $ventasdiarioscuerpo)
 			{
 
 
-						$ventasmovimientoscuerpo_new = new Ventasmovimientoscuerpo;
+						$ventasdiarioscuerpo_new = new Ventasdiarioscuerpo;
 
 
-						$ventasmovimientoscuerpo_new->ventasmovimientos_id = $id_nuevo;
-						$ventasmovimientoscuerpo_new->cantidad = $ventasmovimientoscuerpo->cantidad;
-						$ventasmovimientoscuerpo_new->articulos_id = $ventasmovimientoscuerpo->articulos_id;
-						$ventasmovimientoscuerpo_new->articulo = $ventasmovimientoscuerpo->articulo;
-						$ventasmovimientoscuerpo_new->importe_gravado = $ventasmovimientoscuerpo->importe_gravado;
-						$ventasmovimientoscuerpo_new->importe_no_gravado = $ventasmovimientoscuerpo->importe_no_gravado;
-						$ventasmovimientoscuerpo_new->importe_iva = $ventasmovimientoscuerpo->importe_iva;
-						$ventasmovimientoscuerpo_new->porcentaje_iva = $ventasmovimientoscuerpo->porcentaje_iva;
-						$ventasmovimientoscuerpo_new->importes_otros_impuestos = $ventasmovimientoscuerpo->importes_otros_impuestos;
-						$ventasmovimientoscuerpo_new->porcentaje_bonificacion = $ventasmovimientoscuerpo->porcentaje_bonificacion;
-						$ventasmovimientoscuerpo_new->precio_total = $ventasmovimientoscuerpo->precio_total;
+						$ventasdiarioscuerpo_new->ventasdiarios_id = $id_nuevo;
+						$ventasdiarioscuerpo_new->cantidad = $ventasdiarioscuerpo->cantidad;
+						$ventasdiarioscuerpo_new->articulos_id = $ventasdiarioscuerpo->articulos_id;
+						$ventasdiarioscuerpo_new->articulo = $ventasdiarioscuerpo->articulo;
+						$ventasdiarioscuerpo_new->importe_gravado = $ventasdiarioscuerpo->importe_gravado;
+						$ventasdiarioscuerpo_new->importe_no_gravado = $ventasdiarioscuerpo->importe_no_gravado;
+						$ventasdiarioscuerpo_new->importe_iva = $ventasdiarioscuerpo->importe_iva;
+						$ventasdiarioscuerpo_new->porcentaje_iva = $ventasdiarioscuerpo->porcentaje_iva;
+						$ventasdiarioscuerpo_new->importes_otros_impuestos = $ventasdiarioscuerpo->importes_otros_impuestos;
+						$ventasdiarioscuerpo_new->porcentaje_bonificacion = $ventasdiarioscuerpo->porcentaje_bonificacion;
+						$ventasdiarioscuerpo_new->precio_total = $ventasdiarioscuerpo->precio_total;
 
-						$ventasmovimientoscuerpo_new->save();
+						$ventasdiarioscuerpo_new->save();
 
 
 
@@ -1698,14 +1669,14 @@ public function nccreate()
 
 		}
 
-$ventasmovimientos = DB::table('ventasmovimientos')
+$ventasdiarios = DB::table('ventasdiarios')
 											->where('estado', 'abierto')
 											->whereIn('tiposdocumentos_id', array(6, 9))
 											->paginate(15);
 
 $title = "Notas de Creditos";
 
-return View::make('ventasmovimientos.indexnc', array('title' => $title, 'ventasmovimientos' => $ventasmovimientos));
+return View::make('ventasdiarios.indexnc', array('title' => $title, 'ventasdiarios' => $ventasdiarios));
 
 
 

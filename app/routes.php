@@ -41,4 +41,4 @@ Route::get('/juegos/{id}/saldar','JuegosController@saldar');
 
 Route::resource('juegos', 'JuegosController');
 
-Route::resource('movimientos', 'MovimientosController');
+Route::resource('diarios', 'DiariosController');

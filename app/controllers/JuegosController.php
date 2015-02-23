@@ -11,12 +11,12 @@ class JuegosController extends BaseController {
 	public function index()
 	{
 
-        $juegos = DB::table('juegos')
-															->orderby('id', 'desc')
-															->orderby('agentes_id', 'desc')
-															->paginate(50);
+        $agentes = DB::table('agentes')
+															->orderby('id', 'asc')
+															->get();
         $title = "Juegos";
-        return View::make('juegos.index', array('title' => $title, 'juegos' => $juegos));
+
+        return View::make('juegos.index', array('title' => $title, 'agentes' => $agentes));
 	}
 
 	/**

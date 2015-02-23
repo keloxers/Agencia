@@ -16,7 +16,7 @@
 
 	<nav class="navbar navbar-inverse">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="{{ URL::to('/juegos') }}">Juegos</a>
+			<a class="navbar-brand" href="{{ URL::to('/juegos') }}"> Juegos</a>
 		</div>
 	</nav>
 

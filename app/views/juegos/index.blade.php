@@ -13,7 +13,7 @@
 	<?php
 
 
-		if (count($juegos)>0 )  {
+		if (count($agentes)>0 )  {
 
 
 ?>
@@ -25,54 +25,75 @@
 										<thead>
 											<tr>
 												<th>Agente</th>
-												<th>Juego</th>
-												<th>Sorteo</th>
-												<th>Valor</th>
-												<th>Entregado</th>
-												<th>Vendido</th>
-												<th>A pagar</th>
-												<th>Pagado</th>
-												<th>Deuda</th>
+												<th>Concepto</th>
+												<th>A Pagar</th>
 												<th>Accion</th>
 											</tr>
 										</thead>
 										<tbody>
 
-												<?php
+											<?php
 
-											foreach ($juegos as $juego)
-												{
+													foreach ($agentes as $agente)
+														{
 
-														$agente = Agente::find($juego->agentes_id);
-														$carton = Carton::find($juego->cartons_id);
-
-														echo "<tr>";
-												        echo "<td>" . $agente->agente . "</td>";
-																echo "<td>" . $carton->carton . "</td>";
-																echo "<td>" . $juego->sorteo . "</td>";
-												        echo "<td>" . $juego->valor_juego . "</td>";
-																echo "<td>" . $juego->entregados . "</td>";
-																echo "<td>" . $juego->vendidos . "</td>";
-																echo "<td>" . $juego->a_pagar . "</td>";
-																echo "<td>" . $juego->pagado . "</td>";
-																echo "<td>" . $juego->deuda . "</td>";
-												        echo "<td>" ;
+													// $agente = Agente::find($juego->agentes_id);
 
 
-														echo "<a href='/juegos/" . $juego->id . "/edit' class='btn btn-xs btn-primary'>Editar</a> ";
+													$deuda = 0;
 
-														if($juego->deuda < 0) {
-															echo "<a href='/juegos/" . $juego->id . "/saldar' class='btn btn-xs btn-danger'>Saldar</a> ";
-														}
-
-														print "</td>";
-														print "</tr>";
+													echo "<tr>";
+															echo "<td>" . $agente->agente . "</td>";
+															echo "<td>" ;
 
 
-												}
+
+															$juegos = DB::table('juegos')
+																										->where('agentes_id','=', $agente->id)
+																										->where('deuda','<', 0)
+																										->orderby('id', 'asc')
+																										->get();
+															if (count($juegos)>0 )  {
+																foreach ($juegos as $juego) {
+
+																	$carton = Carton::find($juego->cartons_id);
+
+																	echo "<a href='/juegos/" . $juego->id . "/edit' class='btn btn-xs btn-primary'>" . $carton->carton . "</a> ";
+																	echo "$ " . ($juego->deuda * -1) . " ";
+																	echo "<a href='/juegos/" . $juego->id . "/saldar' class='btn btn-xs btn-danger'>Saldar</a><br>";
 
 
-											?>
+
+																	$deuda += ($juego->deuda * -1);
+
+																}
+															} // endif
+
+
+															echo "</td>" ;
+															echo "<td>" ;
+
+															echo number_format($deuda,2);
+
+															echo "</td>" ;
+
+															echo "<td>" ;
+
+
+															echo "</td>" ;
+
+
+
+
+
+													echo "</td>";
+													echo "</tr>";
+
+
+											}
+
+
+										?>
 
 									</tbody>
 								</table>
@@ -93,7 +114,7 @@
 									</div>
 									<div class="col-sm-4 text-right text-center-xs">
 
-									{{ $juegos->links()}}
+
 
 									</div>
 								</div>

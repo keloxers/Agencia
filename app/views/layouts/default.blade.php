@@ -123,18 +123,17 @@
               </a>
               <ul class="nav bg">
                 <li >
+                  <a href="/diarios" >
+                    <i class="fa fa-angle-right"></i>
+                    <span>Diario</span>
+                  </a>
+                </li>
+                <li >
                   <a href="/juegos" >
                     <i class="fa fa-angle-right"></i>
                     <span>Juegos</span>
                   </a>
                 </li>
-                <li >
-                  <a href="/movimientos" >
-                    <i class="fa fa-angle-right"></i>
-                    <span>Movimientos</span>
-                  </a>
-                </li>
-
                 <li >
                   <a href="/rendicions" >
                     <i class="fa fa-angle-right"></i>
