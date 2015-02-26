@@ -26,17 +26,24 @@
 			<div class="panel-body">
 				{{ Form::open(array('url' => URL::to('rendicions/' . $rendicion->id), 'method' => 'PUT', 'class' => 'panel-body wrapper-lg')) }}
 
+				{{ Form::hidden('porcentaje_agente', $agente->porcentaje_agente, array('id' =>'porcentaje_agente', 'name' =>'porcentaje_agente')) }}
+				{{ Form::hidden('agentes_id', $agente->id, array('id' =>'agentes_id', 'name' =>'agentes_id')) }}
+
+
 				<div class="row">
+
+					<div class="col-xs-4">
+						<label>Agente</label>
+						<p class ="input-lg">
+							{{ $agente->agente }}
+						</p>
+					</div>
+
 					<div class="col-xs-4">
 						<label>Maquina Nro</label>
 						{{ Form::text('maquina', $rendicion->maquina, array('class' => 'form-control input-lg ', 'id' =>'maquina', 'name' =>'maquina', 'placeholder' => '')) }}
 					</div>
 
-					<div class="col-xs-4">
-						<label>Agente</label>
-						{{ Form::select( 'agentes_id', Agente::All()->
-						lists('agente', 'id'), $rendicion->agentes_id, array( "placeholder" => "", 'class' => 'form-control input-lg')) }}
-					</div>
 
 					<div class="col-xs-4">
 						<label>Sorteo</label>
@@ -212,7 +219,9 @@ jq(document).ready( function(){
 
 	function calcular_total() {
 
-		$('#quiniela_pagar').val(accounting.formatMoney(parseFloat($('#quiniela').val() * 0.85)));
+		var porcentaje_agente = parseFloat($('#porcentaje_agente').val());
+
+		$('#quiniela_pagar').val(accounting.formatMoney(parseFloat($('#quiniela').val() * porcentaje_agente)));
 		$('#quiniexpress_pagar').val(accounting.formatMoney(parseFloat($('#quiniexpress').val() * 0.92)));
 		$('#juegos_pagar').val(accounting.formatMoney(parseFloat($('#juegos').val() * 0.90)));
 

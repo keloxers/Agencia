@@ -147,10 +147,14 @@ class RendicionsController extends BaseController {
 	 */
 	public function edit($id)
 	{
+
+
+
 		$rendicion = Rendicion::find($id);
+		$agente = Agente::find($rendicion->agentes_id);
 		$title = "Editar Rendicion";
 
-        return View::make('rendicions.edit', array('title' => $title, 'rendicion' => $rendicion));
+        return View::make('rendicions.edit', array('title' => $title, 'rendicion' => $rendicion, 'agente' => $agente));
 	}
 
 	/**
