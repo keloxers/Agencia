@@ -47,9 +47,13 @@ class RendicionsController extends BaseController {
 
 			$agente = Agente::find($id);
 
+			$rendicion = DB::table('rendicions')->orderby('id', 'desc')->first();
+
+			$sorteo = $rendicion->sorteo + 1;
+
 			$title = "Agregar rendicion";
         // return View::make('rendicions.create');
-				return View::make('rendicions.create', array('title' => $title, 'agente' => $agente));
+				return View::make('rendicions.create', array('title' => $title, 'agente' => $agente, 'sorteo' => $sorteo));
 	}
 
 	/**

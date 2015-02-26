@@ -47,7 +47,7 @@
 
 						<div class="col-xs-4">
 							<label>Sorteo</label>
-							{{ Form::text('sorteo', '', array('class' => 'form-control input-lg', 'id' =>'sorteo', 'placeholder' => '')) }}
+							{{ Form::text('sorteo', $sorteo, array('class' => 'form-control input-lg', 'id' =>'sorteo', 'placeholder' => '')) }}
 						</div>
 
 
