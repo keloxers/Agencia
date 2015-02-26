@@ -47,7 +47,7 @@ class RendicionsController extends BaseController {
 
 			$agente = Agente::find($id);
 
-			$rendicion = DB::table('rendicions')->orderby('id', 'desc')->first();
+			$rendicion = DB::table('rendicions')->where('agentes_id', $agente->id)->orderby('id', 'desc')->first();
 
 			$sorteo = $rendicion->sorteo + 1;
 
