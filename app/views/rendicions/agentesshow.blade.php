@@ -4,15 +4,13 @@
 
 <nav class="navbar navbar-inverse">
 	<div class="navbar-header">
-		<div class="navbar-brand">{{ $cliente->cliente}} : {{ $fecha }}</div>
+		<h1>Rendiciones</h1>
 	</div>
 </nav>
 
-
 	<?php
 
-
-		if (count($ventasmovimientos)>0 )  {
+		if (count($agentes)>0 )  {
 
 
 ?>
@@ -23,10 +21,8 @@
 									<table class="table table-striped b-t b-light text-sm">
 										<thead>
 											<tr>
-												<th>Fecha</th>
-												<th>Cliente</th>
-												<th>Tipo Documento</th>
-												<th>Numero Documento</th>
+												<th>MAquina</th>
+												<th>Agente</th>
 												<th>Accion</th>
 											</tr>
 										</thead>
@@ -34,21 +30,16 @@
 
 												<?php
 
-											foreach ($ventasmovimientos as $ventasmovimiento)
+											foreach ($agentes as $agente)
 												{
-
-														$cliente = Cliente::find($ventasmovimiento->clientes_id);
-														$tiposdocumento = Tiposdocumento::find($ventasmovimiento->tiposdocumentos_id);
 
 
 														echo "<tr>";
-												        echo "<td>" . $ventasmovimiento->fecha . "</td>";
-												        echo "<td>" . $cliente->cliente . "</td>";
-												        echo "<td>" . $tiposdocumento->tiposdocumento . "</td>";
-												        echo "<td>" . str_pad($ventasmovimiento->numero_comprobante, 12, '0', STR_PAD_LEFT) . "</td>";
+																echo "<td>" . $agente->maquina . "</td>";
+																echo "<td>" . $agente->agente . "</td>";
 												        echo "<td>" ;
 
-														echo "<a href='/ventasmovimientos/notacredito/" . $ventasmovimiento->id . "/" . $fecha . "/create' class='btn btn-xs btn-primary'>Crear Nota Credito</a> ";
+														echo "<a href='/rendicions/" . $agente->id . "/create' class='btn btn-xs btn-primary'>Agregar rendicion</a> ";
 
 														print "</td>";
 														print "</tr>";
@@ -78,7 +69,7 @@
 									</div>
 									<div class="col-sm-4 text-right text-center-xs">
 
-									{{ $ventasmovimientos->links()}}
+									{{ $agentes->links()}}
 
 									</div>
 								</div>
@@ -87,9 +78,7 @@
 						</section>
 		<?php
 
-	} else {
-		echo "Nada que mostrar";
-	}
+			}
 
 		?>
 <script src="/js/app.v2.js"></script>

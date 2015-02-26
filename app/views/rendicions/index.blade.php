@@ -8,7 +8,7 @@
 	</div>
 </nav>
 
-<a href="{{ URL::to('/rendicions/create') }}" class="btn btn-s-md btn-primary">Nueva rendición</a>
+<a href="{{ URL::to('/rendicions/agentesshow') }}" class="btn btn-s-md btn-primary">Nueva rendición</a>
 
 	<?php
 

@@ -34,6 +34,11 @@ Route::resource('users', 'UsersController');
 
 
 
+Route::get('/rendicions/{id}/create', 'RendicionsController@create');
+
+
+
+Route::get('/rendicions/agentesshow','RendicionsController@agentesshow');
 
 Route::resource('rendicions', 'RendicionsController');
 

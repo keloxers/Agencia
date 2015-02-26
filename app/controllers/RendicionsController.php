@@ -18,14 +18,38 @@ class RendicionsController extends BaseController {
         return View::make('rendicions.index', array('title' => $title, 'rendicions' => $rendicions));
 	}
 
+
+
+		/**
+		 * Display a listing of the resource.
+		 *
+		 * @return Response
+		 */
+		public function agentesshow()
+		{
+
+	        $agentes = DB::table('agentes')
+																->orderby('agente', 'asc')
+																->paginate(50);
+	        $title = "Selecionar una agente";
+	        return View::make('rendicions.agentesshow', array('title' => $title, 'agentes' => $agentes));
+		}
+
+
+
 	/**
 	 * Show the form for creating a new resource.
 	 *
 	 * @return Response
 	 */
-	public function create()
+	public function create($id)
 	{
-        return View::make('rendicions.create');
+
+			$agente = Agente::find($id);
+
+			$title = "Agregar rendicion";
+        // return View::make('rendicions.create');
+				return View::make('rendicions.create', array('title' => $title, 'agente' => $agente));
 	}
 
 	/**
@@ -70,8 +94,9 @@ class RendicionsController extends BaseController {
 
 		$agente = Agente::find($rendicion->agentes_id);
 
-		$porcentaje_agente = $agente->porcentaje_agente / 100;
-		$porcentaje_agencia = $agente->porcentaje_agencia / 100;
+		$porcentaje_agente = 1 - $agente->porcentaje_agente;
+		$porcentaje_agencia = $agente->porcentaje_agencia;
+
 
 
 		$rendicion->sorteo = Input::get('sorteo');
