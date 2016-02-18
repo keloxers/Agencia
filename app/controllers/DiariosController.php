@@ -11,11 +11,14 @@ class DiariosController extends BaseController {
 	public function index()
 	{
 
-				// $dt = new Date('Y-m-d');
+				$hoy = Carbon::now();
+				$hoy = $hoy->format('Y-m-d');
+				// echo $hoy;
+				// die;
 
         $diarios = DB::table('diarios')
-
-															->orderby('created_at', 'asc')
+															->whereRaw("DATE(created_at) = '$hoy'")
+															->orderby('id', 'asc')
 															->paginate(50);
         $title = "diarios";
         return View::make('diarios.index', array('title' => $title, 'diarios' => $diarios));
@@ -1684,6 +1687,37 @@ return View::make('ventasdiarios.indexnc', array('title' => $title, 'ventasdiari
 }
 
 
+/**
+ * Show the form for creating a new resource.
+ *
+ * @return Response
+ */
+public function cuentacorriente()
+{
+
+	$cuentas = DB::table('cuentas')
+												->orderby('cuenta', 'asc')
+												->paginate(100);
+	$title = "Cuentas";
+			return View::make('diarios.indexctacte', array('title' => $title, 'cuentas' => $cuentas));
+
+}
+
+public function cuentacteshow($id)
+{
+
+			$diarios = DB::table('diarios')
+														->where('cuentas_id','=', $id)
+														->orderby('id', 'asc')
+														->paginate(50);
+			$title = "Diario de cliente: $id";
+			return View::make('diarios.cuentacteshow', array('title' => $title, 'diarios' => $diarios));
+
+
+
+			echo $id;
+			die;
+}
 
 
 

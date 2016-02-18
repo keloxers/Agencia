@@ -47,7 +47,7 @@
 
 						<div class="col-xs-3">
 							<label>Tipo</label>
-								{{ Form::select('tipo', array('debe' => 'debe', 'ingreso' => 'haber'), 'debe', array('class' => 'form-control input-lg', 'id' =>'tipo')) }}
+								{{ Form::select('tipo', array('debe' => 'Debe', 'haber' => 'Haber'), 'debe', array('class' => 'form-control input-lg', 'id' =>'tipo')) }}
 						</div>
 
 						<div class="col-xs-3">

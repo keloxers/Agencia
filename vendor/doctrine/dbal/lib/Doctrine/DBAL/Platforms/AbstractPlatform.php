@@ -1038,8 +1038,9 @@ abstract class AbstractPlatform
     /**
      * Honors that some SQL vendors such as MsSql use table hints for locking instead of the ANSI SQL FOR UPDATE specification.
      *
-     * @param string  $fromClause
-     * @param integer $lockMode
+     * @param string       $fromClause The FROM clause to append the hint for the given lock mode to.
+     * @param integer|null $lockMode   One of the Doctrine\DBAL\LockMode::* constants. If null is given, nothing will
+     *                                 be appended to the FROM clause.
      *
      * @return string
      */
@@ -1226,7 +1227,7 @@ abstract class AbstractPlatform
                     $options['primary']       = $index->getQuotedColumns($this);
                     $options['primary_index'] = $index;
                 } else {
-                    $options['indexes'][$index->getName()] = $index;
+                    $options['indexes'][$index->getQuotedName($this)] = $index;
                 }
             }
         }

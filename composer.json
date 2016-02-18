@@ -7,12 +7,12 @@
 		"laravel/framework": "4.0.*",
 		"components/jquery":"*",
 		"twitter/bootstrap":"*",
-		"tecnick.com/tcpdf": "dev-master"
+		"nesbot/carbon": "~1.14"
 
 	},
 	"require-dev": {
 		"way/generators": "1.0.*@dev"
-	},	
+	},
 	"autoload": {
 		"classmap": [
 			"app/commands",

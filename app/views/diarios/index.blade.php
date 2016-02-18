@@ -2,13 +2,18 @@
 
 @section('content')
 
+<?php
+	$date = Carbon::now();
+	$date = $date->format('d-m-Y');
+ ?>
+
 <nav class="navbar navbar-inverse">
 	<div class="navbar-header">
 		<h1> Diario</h1>
 	</div>
 </nav>
 
-<a href="{{ URL::to('/diarios/create') }}" class="btn btn-s-md btn-primary">Nueva entrega de diarios</a>
+<a href="{{ URL::to('/diarios/create') }}" class="btn btn-s-md btn-primary">Agregar movimiento</a>
 
 	<?php
 
@@ -18,7 +23,7 @@
 
 ?>
 							<section class="panel panel-default">
-								<header class="panel-heading">{{ $title }}</header>
+								<header class="panel-heading"></header>
 
 								<div class="table-responsive">
 									<table class="table table-striped b-t b-light text-sm">
@@ -29,7 +34,6 @@
 												<th class='text-left'>Descripcion</th>
 												<th class='text-center'>Debe</th>
 												<th class='text-center'>Haber</th>
-												<th class='text-center'>Saldo</th>
 												<th class='text-center'>Accion</th>
 											</tr>
 										</thead>
@@ -40,7 +44,6 @@
 												$primero = true;
 												$haber = 0;
 												$debe = 0;
-												$saldo = 0;
 
 											foreach ($diarios as $diario)
 												{
@@ -56,35 +59,37 @@
 
 														$cuenta = Cuenta::find($diario->cuentas_id);
 
-														echo "<tr>";
-												        echo "<td>" . $diario->created_at . "</td>";
-																echo "<td>" . $cuenta->cuenta . "</td>";
-																echo "<td>" . $diario->descripcion . "</td>";
-																echo "<td class='text-right'>";
-																if ($diario->tipo=="debe") {
-																	echo number_format($diario->importe,2);
-																	$debe += $diario->importe;
-																	$saldo -= $diario->importe;
-																}
-																echo "</td>";
-																echo "<td class='text-right'>";
-																if ($diario->tipo=="haber") {
-																	echo number_format($diario->importe,2);
-																	$haber += $diario->importe;
-																	$saldo += $diario->importe;
-																}
-																echo "</td>";
-																echo "<td class='text-right'>" . number_format($saldo,2) . "</td>";
+														if ($cuenta->mostrar_diario){
 
-												        echo "<td class='text-center'>" ;
+																	echo "<tr>";
+																			echo "<td>";
 
 
-														echo "<a href='/diarios/" . $diario->id . "/edit' class='btn btn-xs btn-primary'>Editar</a> ";
+																				$fecha = new Carbon($diario->created_at);
+																				echo $fecha->format('d-m-Y');
 
 
-														print "</td>";
-														print "</tr>";
+																			echo "</td>";
+																			echo "<td>" . $cuenta->cuenta . "</td>";
+																			echo "<td>" . $diario->descripcion . "</td>";
+																			echo "<td class='text-right'>";
+																			if ($diario->tipo=="debe") {
+																				echo number_format($diario->importe,2);
+																				$debe += $diario->importe;
+																			}
+																			echo "</td>";
+																			echo "<td class='text-right'>";
+																			if ($diario->tipo=="haber") {
+																				echo number_format($diario->importe,2);
+																				$haber += $diario->importe;
+																			}
+																			echo "</td>";
 
+															        echo "<td class='text-center'>" ;
+																					echo "<a href='/diarios/" . $diario->id . "/edit' class='btn btn-xs btn-primary'>Editar</a> ";
+																			echo "</td>";
+																	echo "</tr>";
+														}
 
 												}
 
@@ -94,7 +99,6 @@
 												echo "<td></td>";
 												echo "<td class='text-right'>" . number_format($debe,2) . "</td>";
 												echo "<td class='text-right'>" . number_format($haber,2).  "</td>";
-												echo "<td class='text-right'>" . number_format($saldo,2) . "</td>";
 
 												echo "<td></td>";
 												print "</tr>";

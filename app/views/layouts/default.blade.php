@@ -129,6 +129,12 @@
                   </a>
                 </li>
                 <li >
+                  <a href="/cuentacorriente" >
+                    <i class="fa fa-angle-right"></i>
+                    <span>Cuenta Corriente</span>
+                  </a>
+                </li>
+                <li >
                   <a href="/juegos" >
                     <i class="fa fa-angle-right"></i>
                     <span>Juegos</span>

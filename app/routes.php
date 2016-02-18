@@ -47,3 +47,6 @@ Route::get('/juegos/{id}/saldar','JuegosController@saldar');
 Route::resource('juegos', 'JuegosController');
 
 Route::resource('diarios', 'DiariosController');
+
+Route::get('/cuentacorriente','DiariosController@cuentacorriente');
+Route::get('/cuentacorriente/{id}','DiariosController@cuentacteshow');

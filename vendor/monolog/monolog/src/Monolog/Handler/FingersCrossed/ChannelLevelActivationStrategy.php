@@ -2,14 +2,16 @@
 
 /*
  * This file is part of the Monolog package.
-*
-* (c) Jordi Boggiano <j.boggiano@seld.be>
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*/
+ *
+ * (c) Jordi Boggiano <j.boggiano@seld.be>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Monolog\Handler\FingersCrossed;
+
+use Monolog\Logger;
 
 /**
  * Channel and Error level based monolog activation strategy. Allows to trigger activation
@@ -42,8 +44,8 @@ class ChannelLevelActivationStrategy implements ActivationStrategyInterface
      */
     public function __construct($defaultActionLevel, $channelToActionLevel = array())
     {
-        $this->defaultActionLevel = $defaultActionLevel;
-        $this->channelToActionLevel = $channelToActionLevel;
+        $this->defaultActionLevel = Logger::toMonologLevel($defaultActionLevel);
+        $this->channelToActionLevel = array_map('Monolog\Logger::toMonologLevel', $channelToActionLevel);
     }
 
     public function isHandlerActivated(array $record)
