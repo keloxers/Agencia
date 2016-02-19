@@ -1712,11 +1712,6 @@ public function cuentacteshow($id)
 														->paginate(50);
 			$title = "Diario de cliente: $id";
 			return View::make('diarios.cuentacteshow', array('title' => $title, 'diarios' => $diarios));
-
-
-
-			echo $id;
-			die;
 }
 
 

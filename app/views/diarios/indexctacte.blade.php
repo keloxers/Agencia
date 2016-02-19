@@ -41,6 +41,7 @@
 													<thead>
 														<tr>
 															<th class='text-left'>Cuenta</th>
+															<th class='text-left'>Saldo</th>
 														</tr>
 													</thead>
 													<tbody>
@@ -55,6 +56,29 @@
 																							echo "<a href='/cuentacorriente/" . $cuenta->id . "'>";
 																							echo $cuenta->cuenta;
 																							echo "</a> ";
+																						echo "</td>";
+
+																						echo "<td class='text-right'>";
+
+																						$debe = DB::table('diarios')
+																												->where('cuentas_id','=', $cuenta->id)
+																												->where('tipo','=', 'debe')
+																												->sum('importe');
+
+																						$haber = DB::table('diarios')
+																												->where('cuentas_id','=', $cuenta->id)
+																												->where('tipo','=', 'haber')
+																												->sum('importe');
+
+																						$saldo = $debe - $haber;
+
+																						echo number_format($saldo,2);
+
+
+
+
+
+
 																						echo "</td>";
 
 
