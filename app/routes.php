@@ -50,3 +50,11 @@ Route::resource('diarios', 'DiariosController');
 
 Route::get('/cuentacorriente','DiariosController@cuentacorriente');
 Route::get('/cuentacorriente/{id}','DiariosController@cuentacteshow');
+
+
+Route::get('/planilla','DiariosController@planilla');
+
+Route::post( '/planillashow', array(
+    'as' => 'diarios.planillashow',
+    'uses' => 'DiariosController@planillashow'
+) );

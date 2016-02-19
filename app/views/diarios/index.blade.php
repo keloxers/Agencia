@@ -10,6 +10,7 @@
 <nav class="navbar navbar-inverse">
 	<div class="navbar-header">
 		<h1> Diario</h1>
+		<h4>{{ $title }}<h4>
 	</div>
 </nav>
 

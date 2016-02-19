@@ -129,6 +129,12 @@
                   </a>
                 </li>
                 <li >
+                  <a href="/planilla" >
+                    <i class="fa fa-angle-right"></i>
+                    <span>Planilla</span>
+                  </a>
+                </li>
+                <li >
                   <a href="/cuentacorriente" >
                     <i class="fa fa-angle-right"></i>
                     <span>Cuenta Corriente</span>

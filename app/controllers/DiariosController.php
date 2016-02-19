@@ -1721,4 +1721,55 @@ public function cuentacteshow($id)
 
 
 
+
+/**
+ * Show the form for creating a new resource.
+ *
+ * @return Response
+ */
+public function planilla()
+{
+			$title = "Ver planilla";
+			return View::make('diarios.planilla', array('title' => $title));
+
+}
+
+public function planillashow()
+{
+
+		$hoy = date("Y-m-d", strtotime(Input::get('fecha')));
+
+		// $hoy = Carbon::now($hoy);
+		// $hoy = $hoy->format('Y-m-d');
+		// echo $hoy;
+		// die;
+
+
+
+		$diarios = DB::table('diarios')
+													->whereRaw("DATE(created_at) = '$hoy'")
+													->orderby('id', 'asc')
+													->paginate(50);
+		$title = "Planilla de " . $hoy;
+		return View::make('diarios.index', array('title' => $title, 'diarios' => $diarios));
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
