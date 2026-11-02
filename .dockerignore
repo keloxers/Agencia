@@ -1,0 +1,6 @@
+.git
+.env
+docker/data
+goodly.sql
+modelo.mwb
+modelo.mwb.bak

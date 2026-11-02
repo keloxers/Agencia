@@ -1,0 +1,40 @@
+# Desarrollo local: http://localhost:8090
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    # bootstrap/start.php activa el entorno "local" con este hostname.
+    hostname: your-machine-name
+    env_file: .env
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+      DB_HOST: db
+    ports:
+      - "127.0.0.1:8090:80"
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS -o /dev/null http://127.0.0.1/login"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  db:
+    image: mariadb:10.5
+    env_file: .env
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+    command: ["--sql-mode=", "--character-set-server=utf8", "--collation-server=utf8_unicode_ci"]
+    volumes:
+      - ./docker/data/mysql:/var/lib/mysql
+      - ./docker/db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MARIADB_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
